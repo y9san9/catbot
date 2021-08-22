@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "kotlin-project-template"
+rootProject.name = "y9catbot"
 
 includeBuild("buildUtils/dependencies")
 includeBuild("buildUtils/configuration")

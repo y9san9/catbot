@@ -1,6 +1,5 @@
 plugins {
-    // k-mpp, k-js, k-jvm, k-android-app or k-android-library
-    id(`k-jvm`)
+    id(Deps.Plugins.Configuration.Kotlin.Jvm)
 }
 
 group = AppInfo.PACKAGE

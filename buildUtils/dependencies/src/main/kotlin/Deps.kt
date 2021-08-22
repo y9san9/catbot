@@ -89,6 +89,17 @@ object Deps {
         }
     }
     object Plugins {
+        object Configuration {
+            object Kotlin {
+                const val Mpp = "k-mpp"
+                const val Jvm = "k-jvm"
+                const val Js = "k-js"
+                object Android {
+                    const val App = "k-android-app"
+                    const val Library = "k-android-library"
+                }
+            }
+        }
         object Dependencies {
             const val Id = "dependencies"
             const val Classpath = "dependencies:dependencies:SNAPSHOT"
