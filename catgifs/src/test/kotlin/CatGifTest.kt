@@ -9,7 +9,7 @@ private val catgifs = CatGifsClient()
 private suspend fun main() {
     val file = File("test.gif")
     file.delete()
-    catgifs.bufferedGifFlow()
+    catgifs.randomBufferedGif()
         .collect {
             file.appendBytes(it)
         }

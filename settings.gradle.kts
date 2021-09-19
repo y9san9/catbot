@@ -9,5 +9,7 @@ rootProject.name = "y9catbot"
 
 includeBuild("buildUtils/dependencies")
 includeBuild("buildUtils/configuration")
+includeBuild("buildUtils/deploy")
 
 include("catgifs")
+include("bot")
