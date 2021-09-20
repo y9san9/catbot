@@ -3,10 +3,12 @@ package me.y9san9.catbot.di.requests
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
+import dev.inmo.tgbotapi.extensions.utils.asWithOptionalLanguageCode
 import dev.inmo.tgbotapi.extensions.utils.shortcuts.newGroupMembersEvents
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPollingFlow
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.abstracts.WithOptionalLanguageCode
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
 import dev.inmo.tgbotapi.utils.StorageFile
 import kotlinx.coroutines.CoroutineScope
@@ -42,14 +44,17 @@ class TelegramRequestsExecutor(
         flows.newGroupMembersEvents()
             .mapNotNull { event ->
                 // Check if the event was produced by person joined
-                val member = event.chatEvent.members.getOrNull(index = 0)
+                event.chatEvent.members.getOrNull(index = 0)
                     ?.takeIf { it.id == event.user.id }
                     ?: return@mapNotNull null
+
+                val member = event.user
 
                 return@mapNotNull ChatMember(
                     id = member.id.chatId,
                     firstName = member.firstName,
                     lastName = member.lastName,
+                    languageCode = (member as? WithOptionalLanguageCode)?.languageCode,
                     chatId = event.chat.id.chatId
                 )
             }

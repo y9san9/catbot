@@ -18,6 +18,7 @@ object Deps {
     private const val logbackVersion = "0.9.26"
     private const val sshVersion = "2.10.1"
     private const val inMoTgBotApiVersion = "0.35.8"
+    private const val kstringsVersion = "1.0-prototype8"
     
     private const val materialVersion = "1.2.1"
     private const val recyclerViewVersion = "1.1.0"
@@ -85,7 +86,11 @@ object Deps {
         }
         object InMo {
             const val TgBotApi =
-                    "dev.inmo:tgbotapi:$inMoTgBotApiVersion"
+                "dev.inmo:tgbotapi:$inMoTgBotApiVersion"
+        }
+        object KotlinGang {
+            const val KStrings =
+                "fun.kotlingang.kstrings:core:$kstringsVersion"
         }
     }
     object Kapt {

@@ -8,10 +8,12 @@ import me.y9san9.catbot.di.catgifs.readRandomGifToFile
 import me.y9san9.catbot.di.requests.RequestsExecutor
 import me.y9san9.catbot.di.requests.text.TextEntity
 import me.y9san9.catbot.di.requests.text.plus
+import me.y9san9.catbot.di.resources.StringsProvider
 
 class CatBot(
     requestsExecutor: RequestsExecutor,
-    private val catGifs: BufferedCatGifsProvider
+    private val catGifs: BufferedCatGifsProvider,
+    private val stringsProvider: StringsProvider
 //    storage: Storage
 ) {
     private val bot = requestsExecutor
@@ -20,7 +22,7 @@ class CatBot(
         bot.newMembersSelfJoined.onEach { member ->
             bot.sendGif(
                 chatId = member.chatId,
-                text = member.mention + ", докажи, что ты человек.\nНапиши, что происходит на картнке. У тебя пара минут \uD83D\uDE3A",
+                text = stringsProvider[member.languageCode].newMemberCaptchaMessage(member.mention),
                 gif = catGifs.readRandomGifToFile()
             )
         }.launchIn(scope = this)
