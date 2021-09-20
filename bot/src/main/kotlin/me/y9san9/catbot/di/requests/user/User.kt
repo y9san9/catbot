@@ -1,8 +1,9 @@
 package me.y9san9.catbot.di.requests.user
 
+import me.y9san9.catbot.di.requests.language.PossiblyHasLanguageCode
 import me.y9san9.catbot.di.requests.text.TextEntity
 
-interface User {
+interface User : PossiblyHasLanguageCode {
     val id: Long
 
     val firstName: String
