@@ -8,14 +8,14 @@ import dev.inmo.tgbotapi.extensions.utils.shortcuts.newGroupMembersEvents
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPollingFlow
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.ChatMember.abstracts.LeftChatMember
+import dev.inmo.tgbotapi.types.ChatMember.abstracts.MemberChatMember
 import dev.inmo.tgbotapi.types.abstracts.WithOptionalLanguageCode
+import dev.inmo.tgbotapi.types.update.CommonChatMemberUpdatedUpdate
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
 import dev.inmo.tgbotapi.utils.StorageFile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import me.y9san9.catbot.di.requests.text.TextEntities
 import me.y9san9.catbot.di.requests.text.asInMoTextEntities
 import me.y9san9.catbot.di.requests.user.ChatMember
@@ -41,21 +41,20 @@ class TelegramRequestsExecutor(
 ) : RequestsExecutor {
 
     override val newMembersSelfJoined: Flow<ChatMember> =
-        flows.newGroupMembersEvents()
-            .mapNotNull { event ->
-                // Check if the event was produced by person joined
-                event.chatEvent.members.getOrNull(index = 0)
-                    ?.takeIf { it.id == event.user.id }
-                    ?: return@mapNotNull null
+        flows.chatMemberUpdatesFlow
+            .filter { event ->
+                event.data.oldChatMemberState is LeftChatMember &&
+                    event.data.newChatMemberState is MemberChatMember
+            }
+            .map { event ->
+                val member = event.data.user
 
-                val member = event.user
-
-                return@mapNotNull ChatMember(
+                return@map ChatMember(
                     id = member.id.chatId,
                     firstName = member.firstName,
                     lastName = member.lastName,
                     languageCode = (member as? WithOptionalLanguageCode)?.languageCode,
-                    chatId = event.chat.id.chatId
+                    chatId = event.data.chat.id.chatId
                 )
             }
 
