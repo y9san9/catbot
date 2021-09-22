@@ -11,7 +11,7 @@ object DefaultStrings {
     }
     object Ru : Strings {
         override fun newMemberCaptchaMessage(mention: TextEntity.Mention): TextEntities =
-            mention + ", докажи, что ты человек.\nНапиши, что происходит на картнке. У тебя пара минут \uD83D\uDE3A"
+            mention + ", докажи, что ты человек.\nНапиши, что происходит на картинке. У тебя пара минут \uD83D\uDE3A"
     }
 }
 
