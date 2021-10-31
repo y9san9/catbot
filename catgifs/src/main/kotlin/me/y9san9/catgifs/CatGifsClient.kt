@@ -17,8 +17,13 @@ import java.io.File
 
 class CatGifsClient(
     private val logger: Logger = Logger {},
-    private val minDownloadInterval: Long = 10_000
+    private val minDownloadInterval: Long = 10_000,
+    private val maxGifsCached: Int = 500
 ) {
+    init {
+        require(maxGifsCached > 0) { "At least one cache file required for catgifs proper work" }
+    }
+
     private suspend fun randomGif(bufferSize: Int = DEFAULT_BUFFER_SIZE) = RawApi
         .randomGifStream()
         .readAsFlow(bufferSize)
@@ -47,16 +52,19 @@ class CatGifsClient(
 
     private suspend fun FlowCollector<File>.readFiles(directory: File) {
         while (true) {
+            val cachedFiles = directory.listFiles() ?: error("Cannot list files")
+            if (cachedFiles.size >= maxGifsCached)
+                cachedFiles.first().delete()
+
             mutex.withLock {
                 if (System.currentTimeMillis() - lastTimeDownloaded > minDownloadInterval) {
                     val file = readRandomGifToFile(directory)
                     lastTimeDownloaded = System.currentTimeMillis()
-                    logger.processEvent(LogEvent.GifCached(file))
+                    logger.processEvent(LogEvent.GifCached(file, cachedAmount = cachedFiles.size + 1))
                     emit(file)
                 } else {
-                    val cachedFiles = directory.listFiles() ?: error("Cannot list files")
                     val file = cachedFiles.random()
-                    logger.processEvent(LogEvent.CachedFileUsed(file))
+                    logger.processEvent(LogEvent.CachedFileUsed(file, cachedAmount = cachedFiles.size))
                     emit(file)
                 }
             }
