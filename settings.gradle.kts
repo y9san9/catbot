@@ -11,5 +11,6 @@ includeBuild("buildUtils/dependencies")
 includeBuild("buildUtils/configuration")
 includeBuild("buildUtils/deploy")
 
+include("db-migrations")
 include("catgifs")
 include("bot")
