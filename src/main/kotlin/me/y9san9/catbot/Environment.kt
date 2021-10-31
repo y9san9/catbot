@@ -11,6 +11,9 @@ private fun setupMessage(reason: String) = """
     3) DATABASE_USER - user for database
     4) DATABASE_PASSWORD - password for database
     
+    Optional:
+    1) LOG_CHAT_ID - telegram chat/channel id where the bot will send updates to
+    
     Database parameters should be optional in the future (sqlite will be used as fallback)
 """.trimIndent()
 

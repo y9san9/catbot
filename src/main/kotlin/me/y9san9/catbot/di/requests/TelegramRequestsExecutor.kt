@@ -25,8 +25,7 @@ import me.y9san9.catbot.di.requests.models.asChat
 import me.y9san9.catbot.util.unit
 import java.io.File
 
-fun TelegramRequestsExecutor(botToken: String): TelegramRequestsExecutor {
-    val bot = telegramBot(botToken)
+fun TelegramRequestsExecutor(bot: TelegramBot): TelegramRequestsExecutor {
     val flows = FlowsUpdatesFilter()
 
     val executor = TelegramRequestsExecutor(bot, flows)
