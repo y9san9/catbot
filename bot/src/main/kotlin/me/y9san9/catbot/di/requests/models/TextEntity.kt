@@ -13,6 +13,9 @@ sealed class TextEntity {
     class Regular(val text: String) : TextEntity() {
         override val raw: String = text
     }
+    class Italic(val text: String) : TextEntity() {
+        override val raw: String = text
+    }
     class Mention(val text: String, val id: Long) : TextEntity() {
         override val raw: String = text
     }

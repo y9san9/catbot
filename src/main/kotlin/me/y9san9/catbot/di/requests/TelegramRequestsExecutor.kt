@@ -8,9 +8,11 @@ import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.LeftChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.MemberChatMember
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.link
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
@@ -41,6 +43,7 @@ class TelegramRequestsExecutor(
 ) : CatbotRequestsExecutor {
     override val newMembersJoined: Flow<ChatMember> =
         flows.chatMemberUpdatesFlow
+            .filter { event -> event.data.user.id.chatId == event.data.newChatMemberState.user.id.chatId }
             .filter { event ->
                 event.data.oldChatMemberState is LeftChatMember &&
                     event.data.newChatMemberState is MemberChatMember
@@ -50,7 +53,8 @@ class TelegramRequestsExecutor(
     override val botJoinedToGroup: Flow<Chat> =
         flows.myChatMemberUpdatesFlow.filter { event ->
             event.data.oldChatMemberState is LeftChatMember &&
-                    event.data.newChatMemberState is MemberChatMember
+                    (event.data.newChatMemberState is MemberChatMember ||
+                            event.data.newChatMemberState is AdministratorChatMember)
         }.map { event -> event.data.chat.asChat }
 
     override val startCommands: Flow<Chat> =
