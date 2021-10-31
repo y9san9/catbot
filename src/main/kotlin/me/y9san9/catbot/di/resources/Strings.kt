@@ -7,7 +7,8 @@ import me.y9san9.catbot.di.resources.DefaultStrings.Ru
 object DefaultStrings {
     object Default : Strings {
         override fun groupWelcomeMessage(groupTitle: String): TextEntities =
-            TextEntity.Start + "I would love to serve $groupTitle, so let's check the first cat \uD83D\uDE3B"
+            TextEntity.Start + "I would love to serve $groupTitle, so let's check the first cat \uD83D\uDE3B.\n\n" +
+            TextEntity.Italic(text = "(add me as admin without permissions, so I would receive events about users join)")
 
         override fun startMessage(): TextEntities =
             TextEntity.Start + "Add me to the group and I will send there awesome cat-gifs like this \uD83D\uDC08"
@@ -20,7 +21,8 @@ object DefaultStrings {
     }
     object Ru : Strings {
         override fun groupWelcomeMessage(groupTitle: String): TextEntities =
-            TextEntity.Start + "Буду рад служить $groupTitle! а вот и первый котик \uD83D\uDE3B"
+            TextEntity.Start + "Буду рад служить $groupTitle! а вот и первый котик \uD83D\uDE3B\n\n" +
+            TextEntity.Italic(text = "(сделайте меня администратором без прав, чтобы я получал события о присоединении пользователей)")
 
         override fun startMessage(): TextEntities =
             TextEntity.Start + "Добавь меня в свою группу и я буду отправлять туда куртые котогифки как эта \uD83D\uDC08"
