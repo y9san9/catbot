@@ -17,12 +17,12 @@ fun handleStartCommand(
     scope: CoroutineScope
 ) {
     executor.startCommands.onEach { chat ->
-        logger.processEvent(LogEvent.StartCommandReceived)
+        logger.processEvent(LogEvent.StartCommandReceived(chat))
         executor.sendGif(
             chatId = chat.id,
             text = stringsProvider.default.startMessage(),
             gif = catGifs.readRandomGifToFile()
         )
-        logger.processEvent(LogEvent.StartCommandGifSent)
+        logger.processEvent(LogEvent.StartCommandGifSent(chat))
     }.launchIn(scope)
 }

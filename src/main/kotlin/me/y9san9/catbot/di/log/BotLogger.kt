@@ -1,7 +1,9 @@
 package me.y9san9.catbot.di.log
 
-abstract class BotStringLogger : Logger {
-    final override fun processEvent(event: LogEvent) {
+class BotLogger(
+    private val logAction: (LogEvent, String) -> Unit
+) : Logger {
+    override fun processEvent(event: LogEvent) {
         val string = when (event) {
             is LogEvent.BotStarted -> "Bot started"
             is LogEvent.SetupFinished -> "Bot setup finished"
@@ -13,16 +15,9 @@ abstract class BotStringLogger : Logger {
             is LogEvent.GifSent -> "Gif with a cute cat sent!"
             is LogEvent.BotJoinedToGroup -> "Bot joined the group ${event.chat.title}"
             is LogEvent.GroupWelcomeGifSent -> "Group welcome gif sent"
-            is LogEvent.StartCommandReceived -> "Start command received"
-            is LogEvent.StartCommandGifSent -> "Start command gif sent"
+            is LogEvent.StartCommandReceived -> "Start command received in chat ${event.chat.title} (${event.chat.link})"
+            is LogEvent.StartCommandGifSent -> "Start command gif sent in chat ${event.chat.title} (${event.chat.link})"
         }
-        processEvent(event, string)
+        logAction(event, string)
     }
-
-    abstract fun processEvent(event: LogEvent, stringRepresentation: String)
-}
-
-object BotPrintLogger : BotStringLogger() {
-    override fun processEvent(event: LogEvent, stringRepresentation: String) =
-        PrintLogger.log(stringRepresentation)
 }

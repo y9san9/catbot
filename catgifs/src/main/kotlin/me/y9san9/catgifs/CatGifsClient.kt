@@ -53,8 +53,11 @@ class CatGifsClient(
     private suspend fun FlowCollector<File>.readFiles(directory: File) {
         while (true) {
             val cachedFiles = directory.listFiles() ?: error("Cannot list files")
-            if (cachedFiles.size >= maxGifsCached)
-                cachedFiles.first().delete()
+            if (cachedFiles.size >= maxGifsCached) {
+                val file = cachedFiles.first()
+                file.delete()
+                logger.processEvent(LogEvent.GifDeletedDueToCacheOverflow(file, cachedAmount = cachedFiles.size - 1))
+            }
 
             mutex.withLock {
                 if (System.currentTimeMillis() - lastTimeDownloaded > minDownloadInterval) {
