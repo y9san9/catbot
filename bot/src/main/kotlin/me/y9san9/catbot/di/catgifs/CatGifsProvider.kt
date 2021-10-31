@@ -1,7 +1,7 @@
 package me.y9san9.catbot.di.catgifs
 
-import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface CatGifsProvider {
-    suspend fun randomGif(): Flow<ByteArray>
+    suspend fun readRandomGifToFile(): File
 }

@@ -2,3 +2,4 @@
 .idea
 build
 /deploy.properties
+/catgifs-tmp-dir/

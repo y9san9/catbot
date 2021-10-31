@@ -1,6 +1,6 @@
 package me.y9san9.catbot.di.log
 
-abstract class StringLogger : Logger {
+abstract class BotStringLogger : Logger {
     final override fun processEvent(event: LogEvent) {
         val string = when (event) {
             is LogEvent.BotStarted -> "Bot started"
@@ -20,4 +20,9 @@ abstract class StringLogger : Logger {
     }
 
     abstract fun processEvent(event: LogEvent, stringRepresentation: String)
+}
+
+object BotPrintLogger : BotStringLogger() {
+    override fun processEvent(event: LogEvent, stringRepresentation: String) =
+        PrintLogger.log(stringRepresentation)
 }
