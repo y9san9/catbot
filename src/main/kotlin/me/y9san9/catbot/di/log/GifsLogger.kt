@@ -6,8 +6,8 @@ import me.y9san9.catgifs.di.log.LogEvent
 abstract class GifsStringLogger : Logger {
     final override fun processEvent(event: LogEvent) {
         val string = when (event) {
-            is LogEvent.CachedFileUsed -> "Cached file used ${event.file.name}"
-            is LogEvent.GifCached -> "New gif cached ${event.file.name}"
+            is LogEvent.CachedFileUsed -> "Cached file used ${event.file.name}. Cached amount: ${event.cachedAmount}"
+            is LogEvent.GifCached -> "New gif cached ${event.file.name}. Cached amount now: ${event.cachedAmount}"
         }
         processEvent(event, string)
     }
