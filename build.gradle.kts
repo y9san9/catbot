@@ -17,6 +17,8 @@ allprojects {
 dependencies {
     implementation(project(Deps.Projects.Bot))
     implementation(project(Deps.Projects.Catgifs))
+    implementation(project(Deps.Projects.DbMigrations))
+    implementation(Deps.Libs.Slf4j.Simple)
     implementation(Deps.Libs.Exposed.Core)
     implementation(Deps.Libs.Exposed.Jdbc)
     implementation(Deps.Libs.InMo.TgBotApi)

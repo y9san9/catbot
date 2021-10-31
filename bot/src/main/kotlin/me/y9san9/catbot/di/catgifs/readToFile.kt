@@ -7,13 +7,13 @@ import java.io.File
 
 
 @Suppress("BlockingMethodInNonBlockingContext")
-suspend fun BufferedCatGifsProvider.readRandomGifToFile(): File = withContext(Dispatchers.IO) {
+suspend fun CatGifsProvider.readRandomGifToFile(): File = withContext(Dispatchers.IO) {
     val file = File.createTempFile(
         /*prefix = */"y9catbot-",
         /*suffix = */".gif"
     )
 
-    randomBufferedGif()
+    randomGif()
         .collect {
             file.appendBytes(it)
         }

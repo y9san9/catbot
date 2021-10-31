@@ -1,33 +1,46 @@
 package me.y9san9.catbot
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import me.y9san9.catbot.di.catgifs.BufferedCatGifsProvider
-import me.y9san9.catbot.di.catgifs.readRandomGifToFile
-import me.y9san9.catbot.di.requests.RequestsExecutor
-import me.y9san9.catbot.di.requests.text.TextEntity
-import me.y9san9.catbot.di.requests.text.plus
+import me.y9san9.catbot.di.catgifs.CatGifsProvider
+import me.y9san9.catbot.di.log.LogEvent
+import me.y9san9.catbot.di.log.Logger
+import me.y9san9.catbot.di.requests.CatbotRequestsExecutor
 import me.y9san9.catbot.di.resources.StringsProvider
+import me.y9san9.catbot.di.storage.Storage
+import me.y9san9.catbot.handlers.handleBotJoinedToGroup
+import me.y9san9.catbot.handlers.handleNewUsersJoined
+import me.y9san9.catbot.handlers.handleStartCommand
 
 class CatBot(
-    requestsExecutor: RequestsExecutor,
-    private val catGifs: BufferedCatGifsProvider,
-    private val stringsProvider: StringsProvider
-//    storage: Storage
+    executor: CatbotRequestsExecutor,
+    private val catGifs: CatGifsProvider,
+    private val stringsProvider: StringsProvider,
+    private val storage: Storage,
+    private val logger: Logger,
+    private val scope: CoroutineScope
 ) {
-    private val bot = requestsExecutor
+    private val bot = executor
 
-    suspend fun startNewInstance() = coroutineScope {
-        bot.newMembersSelfJoined.onEach { member ->
-            bot.sendGif(
-                chatId = member.chatId,
-                text = stringsProvider[member.languageCode].newMemberCaptchaMessage(member.mention),
-                gif = catGifs.readRandomGifToFile()
-            )
-        }.launchIn(scope = this)
+    suspend fun startNewInstance() {
+        logger.processEvent(LogEvent.BotStarted)
 
-        return@coroutineScope
+        storage.init()
+
+        handleNewUsersJoined(
+            executor = bot,
+            stringsProvider, catGifs, storage, logger, scope
+        )
+        handleBotJoinedToGroup(
+            executor = bot,
+            stringsProvider, catGifs, logger, scope
+        )
+        handleStartCommand(
+            executor = bot,
+            stringsProvider, catGifs, logger, scope
+        )
+
+        logger.processEvent(LogEvent.SetupFinished)
     }
 
     companion object

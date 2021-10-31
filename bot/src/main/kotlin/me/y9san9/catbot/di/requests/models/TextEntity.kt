@@ -1,4 +1,6 @@
-package me.y9san9.catbot.di.requests.text
+package me.y9san9.catbot.di.requests.models
+
+import java.awt.SystemColor.text
 
 typealias TextEntities = List<TextEntity>
 
@@ -14,8 +16,9 @@ sealed class TextEntity {
     class Mention(val text: String, val id: Long) : TextEntity() {
         override val raw: String = text
     }
+
     companion object {
-        val Start = Regular("")
+        val Start = Regular(text = "")
     }
 
     val entities get() = listOf(this)
