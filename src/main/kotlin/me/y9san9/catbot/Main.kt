@@ -12,7 +12,7 @@ suspend fun main() = coroutineScope {
     val databaseUrl = getEnvOrFail("DATABASE_URL")
     val databaseUser = getEnvOrFail("DATABASE_USER")
     val databasePassword = getEnvOrFail("DATABASE_PASSWORD")
-safely {  }
+
     CatBot
         .startNewDefaultInstanceSafely(
             scope = this + CoroutineName("Catbot Coroutine"),

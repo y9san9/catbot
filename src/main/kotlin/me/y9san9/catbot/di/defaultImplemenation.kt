@@ -35,7 +35,7 @@ fun CatBot.startNewDefaultInstanceSafely(
         scope = scope,
         botStarter = { safeScope ->
             startNewInstance(
-                executor = TelegramRequestsExecutor(telegramBot),
+                executor = TelegramRequestsExecutor(safeScope, telegramBot),
                 catGifs = KtorCatgifsProvider(safeScope) { _, message -> logWriter.log(message) },
                 stringsProvider = DefaultStringsProvider,
                 storage = DatabaseStorage(
