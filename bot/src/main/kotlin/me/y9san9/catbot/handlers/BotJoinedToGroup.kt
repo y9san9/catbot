@@ -18,12 +18,12 @@ fun handleBotJoinedToGroup(
 ) {
     executor.botJoinedToGroup.onEach { chat ->
         logger.processEvent(LogEvent.BotJoinedToGroup(chat))
-        executor.sendGif(
+        val gifSent = executor.sendGif(
             chatId = chat.id,
             text = stringsProvider.default.groupWelcomeMessage(chat.title),
             gif = catGifs.readRandomGifToFile()
         )
-        logger.processEvent(LogEvent.GroupWelcomeGifSent)
+        logger.processEvent(if (gifSent) LogEvent.GroupWelcomeGifSent else LogEvent.CouldNotSentTheGif(chat))
 
     }.launchIn(scope)
 }
