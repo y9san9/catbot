@@ -14,11 +14,13 @@ sealed class LogEvent {
     }
 
     object UserSaved : LogEvent()
-    object GifSent : LogEvent()
+    object WelcomeGifSent : LogEvent()
 
     class BotJoinedToGroup(val chat: Chat) : LogEvent()
     object GroupWelcomeGifSent : LogEvent()
 
     class StartCommandReceived(val chat: Chat) : LogEvent()
     class StartCommandGifSent(val chat: Chat) : LogEvent()
+
+    class CouldNotSentTheGif(val chat: Chat) : LogEvent()
 }

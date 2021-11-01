@@ -16,5 +16,5 @@ interface CatbotRequestsExecutor {
 
     val startCommands: Flow<Chat>
 
-    suspend fun sendGif(chatId: Long, text: TextEntities, gif: File)
+    suspend fun sendGif(chatId: Long, text: TextEntities, gif: File): Boolean
 }

@@ -18,11 +18,11 @@ fun handleStartCommand(
 ) {
     executor.startCommands.onEach { chat ->
         logger.processEvent(LogEvent.StartCommandReceived(chat))
-        executor.sendGif(
+        val gifSent = executor.sendGif(
             chatId = chat.id,
             text = stringsProvider.default.startMessage(),
             gif = catGifs.readRandomGifToFile()
         )
-        logger.processEvent(LogEvent.StartCommandGifSent(chat))
+        logger.processEvent(if (gifSent) LogEvent.StartCommandGifSent(chat) else LogEvent.CouldNotSentTheGif(chat))
     }.launchIn(scope)
 }

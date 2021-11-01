@@ -65,12 +65,12 @@ class TelegramRequestsExecutor(
             message == "start"
         }.map { event -> event.data.chat.asChat }
 
-    override suspend fun sendGif(chatId: Long, text: TextEntities, gif: File) =
+    override suspend fun sendGif(chatId: Long, text: TextEntities, gif: File): Boolean =
         safelyWithoutExceptions {
             bot.sendAnimation(
                 chatId = ChatId(chatId),
                 animation = MultipartFile(file = StorageFile(gif)),
                 entities = text.asInMoTextEntities
             )
-        }.unit
+        } != null
 }

@@ -31,11 +31,11 @@ fun handleNewUsersJoined(
                 stringsProvider[member.languageCode].oldMemberCaptchaMessage(member.mention)
             }
         }
-        executor.sendGif(
+        val gifSent = executor.sendGif(
             chatId = member.chat.id,
             text = text,
             gif = catGifs.readRandomGifToFile()
         )
-        logger.processEvent(LogEvent.GifSent)
+        logger.processEvent(if (gifSent) LogEvent.WelcomeGifSent else LogEvent.CouldNotSentTheGif(member.chat))
     }.launchIn(scope)
 }
