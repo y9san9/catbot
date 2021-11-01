@@ -1,7 +1,7 @@
 package me.y9san9.catbot
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import me.y9san9.catbot.di.catgifs.CatGifsProvider
 import me.y9san9.catbot.di.log.LogEvent
 import me.y9san9.catbot.di.log.Logger
@@ -12,36 +12,32 @@ import me.y9san9.catbot.handlers.handleBotJoinedToGroup
 import me.y9san9.catbot.handlers.handleNewUsersJoined
 import me.y9san9.catbot.handlers.handleStartCommand
 
-class CatBot(
-    executor: CatbotRequestsExecutor,
-    private val catGifs: CatGifsProvider,
-    private val stringsProvider: StringsProvider,
-    private val storage: Storage,
-    private val logger: Logger,
-    private val scope: CoroutineScope
-) {
-    private val bot = executor
-
-    suspend fun startNewInstance() {
+object CatBot {
+    fun startNewInstance(
+        executor: CatbotRequestsExecutor,
+        catGifs: CatGifsProvider,
+        stringsProvider: StringsProvider,
+        storage: Storage,
+        logger: Logger,
+        scope: CoroutineScope,
+    ) = scope.launch {
         logger.processEvent(LogEvent.BotStarted)
 
         storage.init()
 
         handleNewUsersJoined(
-            executor = bot,
-            stringsProvider, catGifs, storage, logger, scope
+            executor, stringsProvider, catGifs, storage, logger,
+            scope = this
         )
         handleBotJoinedToGroup(
-            executor = bot,
-            stringsProvider, catGifs, logger, scope
+            executor, stringsProvider, catGifs, logger,
+            scope = this
         )
         handleStartCommand(
-            executor = bot,
-            stringsProvider, catGifs, logger, scope
+            executor, stringsProvider, catGifs, logger,
+            scope = this
         )
 
         logger.processEvent(LogEvent.SetupFinished)
     }
-
-    companion object
 }
