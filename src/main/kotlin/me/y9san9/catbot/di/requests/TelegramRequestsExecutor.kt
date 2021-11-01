@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
 import dev.inmo.tgbotapi.utils.StorageFile
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import me.y9san9.catbot.di.requests.models.Chat
 import me.y9san9.catbot.di.requests.models.asInMoTextEntities
@@ -24,12 +25,12 @@ import me.y9san9.catbot.di.requests.models.asChat
 import me.y9san9.catbot.util.unit
 import java.io.File
 
-fun TelegramRequestsExecutor(bot: TelegramBot): TelegramRequestsExecutor {
+fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramRequestsExecutor {
     val flows = FlowsUpdatesFilter()
 
     val executor = TelegramRequestsExecutor(bot, flows)
 
-    bot.longPolling(flows)
+    bot.longPolling(flows, scope = scope)
 
     return executor
 }
