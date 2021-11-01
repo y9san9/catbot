@@ -1,7 +1,10 @@
 package me.y9san9.catbot
 
+import dev.inmo.micro_utils.coroutines.safely
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
-import me.y9san9.catbot.di.defaultImplementation
+import kotlinx.coroutines.plus
+import me.y9san9.catbot.di.startNewDefaultInstanceSafely
 
 suspend fun main() = coroutineScope {
     val botToken = getEnvOrFail("BOT_TOKEN")
@@ -9,15 +12,14 @@ suspend fun main() = coroutineScope {
     val databaseUrl = getEnvOrFail("DATABASE_URL")
     val databaseUser = getEnvOrFail("DATABASE_USER")
     val databasePassword = getEnvOrFail("DATABASE_PASSWORD")
-
+safely {  }
     CatBot
-        .defaultImplementation(
-            scope = this,
+        .startNewDefaultInstanceSafely(
+            scope = this + CoroutineName("Catbot Coroutine"),
             token = botToken,
             logChatId = logChatId,
             databaseUrl = databaseUrl,
             databaseUser = databaseUser,
             databasePassword = databasePassword
         )
-        .startNewInstance()
 }

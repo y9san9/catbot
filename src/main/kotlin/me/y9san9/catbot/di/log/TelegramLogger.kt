@@ -15,10 +15,11 @@ class TelegramLogger(
     private val chatId: Long,
     private val bot: TelegramBot,
     private val scope: CoroutineScope,
-    private val logMessageDelay: Long = 1_000
+    messagesBufferSize: Int = 50,
+    private val logMessageDelay: Long = 3_000
 ) : LogWriter {
     private val messages = MutableSharedFlow<String>(
-        extraBufferCapacity = 10,
+        extraBufferCapacity = messagesBufferSize,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 

@@ -1,6 +1,5 @@
 package me.y9san9.catbot.di.requests
 
-import dev.inmo.tgbotapi.bot.Ktor.telegramBot
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.utils.extensions.parseCommandsWithParams
@@ -12,9 +11,7 @@ import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.LeftChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.MemberChatMember
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
-import dev.inmo.tgbotapi.types.link
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
 import dev.inmo.tgbotapi.utils.StorageFile
@@ -46,7 +43,7 @@ class TelegramRequestsExecutor(
             .filter { event -> event.data.user.id.chatId == event.data.newChatMemberState.user.id.chatId }
             .filter { event ->
                 event.data.oldChatMemberState is LeftChatMember &&
-                    event.data.newChatMemberState is MemberChatMember
+                        event.data.newChatMemberState is MemberChatMember
             }
             .map { event -> ChatMember(event.data.user, event.data.chat as PublicChat) }
 

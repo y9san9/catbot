@@ -12,8 +12,7 @@ import me.y9san9.catgifs.CatGifsClient
 import me.y9san9.catgifs.di.log.LogEvent
 import java.io.File
 
-class KtorCatgifsProvider(logAction: (LogEvent, String) -> Unit) : CatGifsProvider {
-    private val scope = CoroutineScope(Dispatchers.Default) + CoroutineName(name = "Cat Gifs Coroutine")
+class KtorCatgifsProvider(scope: CoroutineScope, logAction: (LogEvent, String) -> Unit) : CatGifsProvider {
 
     private val gifsFlow = CatGifsClient(GifsLogger(logAction))
         .randomGifFiles()
