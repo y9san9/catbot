@@ -20,7 +20,7 @@ class BotLogger(
             is LogEvent.StartCommandReceived -> "Start command received in chat ${event.chat.title} (${event.chat.link})"
             is LogEvent.StartCommandGifSent -> "Start command gif sent in chat ${event.chat.title} (${event.chat.link})"
             is LogEvent.CouldNotSentTheGif ->
-                "Could not send the gif to chat ${event.chat.title} (${event.chat.link})."+
+                "Could not send the gif to chat ${event.chat.title} (${event.chat.link}). "+
                     "Probably the bot was blocked by user, or removed from chat \uD83D\uDE3F"
         }
         logAction(event, string)
