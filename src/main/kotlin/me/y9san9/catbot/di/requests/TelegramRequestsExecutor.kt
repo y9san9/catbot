@@ -1,5 +1,6 @@
 package me.y9san9.catbot.di.requests
 
+import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.utils.extensions.parseCommandsWithParams
@@ -64,9 +65,12 @@ class TelegramRequestsExecutor(
             message == "start"
         }.map { event -> event.data.chat.asChat }
 
-    override suspend fun sendGif(chatId: Long, text: TextEntities, gif: File) = bot.sendAnimation(
-        chatId = ChatId(chatId),
-        animation = MultipartFile(file = StorageFile(gif)),
-        entities = text.asInMoTextEntities
-    ).unit
+    override suspend fun sendGif(chatId: Long, text: TextEntities, gif: File) =
+        safelyWithoutExceptions {
+            bot.sendAnimation(
+                chatId = ChatId(chatId),
+                animation = MultipartFile(file = StorageFile(gif)),
+                entities = text.asInMoTextEntities
+            )
+        }.unit
 }
