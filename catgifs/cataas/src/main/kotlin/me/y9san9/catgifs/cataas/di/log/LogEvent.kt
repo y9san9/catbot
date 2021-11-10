@@ -1,4 +1,4 @@
-package me.y9san9.catgifs.di.log
+package me.y9san9.catgifs.cataas.di.log
 
 import java.io.File
 

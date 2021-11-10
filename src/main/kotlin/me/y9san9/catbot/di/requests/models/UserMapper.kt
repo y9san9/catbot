@@ -8,5 +8,5 @@ val PrivateChat.asUser get() = User(
     languageCode = (this as? WithOptionalLanguageCode)?.languageCode,
     firstName = firstName,
     lastName = lastName,
-    username = username?.username
+    username = username?.username?.let(::Username)
 )

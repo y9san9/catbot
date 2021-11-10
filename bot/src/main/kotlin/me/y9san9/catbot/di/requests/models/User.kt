@@ -6,7 +6,7 @@ interface User : Chat, WithOptionalLanguageCode, WithOptionalUsername {
     val firstName: String
     val lastName: String
 
-    override val username: String?
+    override val username: Username?
 
     override val title: String get() = lastName
         .takeIf { it.isNotBlank() }
@@ -22,7 +22,7 @@ fun User(
     id: Long,
     firstName: String,
     lastName: String,
-    username: String?
+    username: Username?
 ): User = _User(languageCode, id, firstName, lastName, username)
 
 @Suppress("ClassName")
@@ -31,5 +31,5 @@ private data class _User(
     override val id: Long,
     override val firstName: String,
     override val lastName: String,
-    override val username: String?
+    override val username: Username?
 ) : User

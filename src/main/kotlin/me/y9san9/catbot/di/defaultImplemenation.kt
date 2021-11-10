@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newCoroutineContext
 import kotlinx.coroutines.plus
 import me.y9san9.catbot.CatBot
+import me.y9san9.catbot.di.catgifs.FromCacheCatgifsProvider
 import me.y9san9.catbot.di.catgifs.KtorCatgifsProvider
 import me.y9san9.catbot.di.log.BotLogger
 import me.y9san9.catbot.di.log.PrintLogger
@@ -17,15 +18,21 @@ import me.y9san9.catbot.di.requests.TelegramRequestsExecutor
 import me.y9san9.catbot.di.resources.DefaultStringsProvider
 import me.y9san9.catbot.di.storage.db.DatabaseStorage
 
+enum class CatGifsProviderType {
+    Local, Cataas
+}
+
 fun CatBot.startNewDefaultInstanceSafely(
     scope: CoroutineScope,
     token: String,
-    logChatId: Long?,
     databaseUrl: String,
     databaseUser: String,
-    databasePassword: String
+    databasePassword: String,
+    logChatId: Long?,
+    catGifsProviderType: CatGifsProviderType
 ) {
     val telegramBot = telegramBot(token)
+
     val logWriter = when (logChatId) {
         null -> PrintLogger
         else -> TelegramLogger(logChatId, telegramBot, scope)
@@ -34,9 +41,18 @@ fun CatBot.startNewDefaultInstanceSafely(
     startNewInstanceSafely(
         scope = scope,
         botStarter = { safeScope ->
+            val catgifsProvider = when (catGifsProviderType) {
+                CatGifsProviderType.Cataas -> KtorCatgifsProvider(safeScope) { _, message ->
+                    logWriter.log(message)
+                }
+                CatGifsProviderType.Local -> FromCacheCatgifsProvider(safeScope) { _, message ->
+                    logWriter.log(message)
+                }
+            }
+
             startNewInstance(
                 executor = TelegramRequestsExecutor(safeScope, telegramBot),
-                catGifs = KtorCatgifsProvider(safeScope) { _, message -> logWriter.log(message) },
+                catGifs = catgifsProvider,
                 stringsProvider = DefaultStringsProvider,
                 storage = DatabaseStorage(
                     url = databaseUrl,
