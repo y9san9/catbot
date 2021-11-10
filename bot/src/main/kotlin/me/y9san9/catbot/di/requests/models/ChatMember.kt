@@ -7,7 +7,7 @@ interface ChatMember : User {
 fun ChatMember(user: User, chat: Chat): ChatMember =
     ChatMember(user.id, user.firstName, user.lastName, user.languageCode, user.username, chat)
 
-fun ChatMember(id: Long, firstName: String, lastName: String, languageCode: String?, username: String?, chat: Chat): ChatMember =
+fun ChatMember(id: Long, firstName: String, lastName: String, languageCode: String?, username: Username?, chat: Chat): ChatMember =
     _ChatMember(id, firstName, lastName, languageCode, username, chat)
 
 @Suppress("ClassName")
@@ -16,6 +16,6 @@ private data class _ChatMember(
     override val firstName: String,
     override val lastName: String,
     override val languageCode: String?,
-    override val username: String?,
+    override val username: Username?,
     override val chat: Chat
 ) : ChatMember

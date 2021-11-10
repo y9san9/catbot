@@ -3,7 +3,7 @@
 object Deps {
     const val compileSdkVersion = 30
     const val minSdkVersion = 21
-    
+
     private const val kotlinVersion = "1.5.0"
     private const val coroutinesVersion = "1.5.0"
     private const val serializationVersion = "1.2.2"
@@ -19,7 +19,7 @@ object Deps {
     private const val sshVersion = "2.10.1"
     private const val inMoTgBotApiVersion = "0.36.0"
     private const val kstringsVersion = "1.0-prototype8"
-    
+
     private const val materialVersion = "1.2.1"
     private const val recyclerViewVersion = "1.1.0"
     private const val swipeRefreshLayoutVersion = "1.1.0"
@@ -29,6 +29,7 @@ object Deps {
     private const val androidAppCompatVersion = "1.1.0"
 
     private const val androidGradlePluginVersion = "4.2.0"
+    private const val shadowVer = "7.0.0"
 
     object Libs {
         object Kotlinx {
@@ -59,7 +60,7 @@ object Deps {
             const val Jdbc = "org.postgresql:postgresql:$postgresqlVersion"
         }
         object Logback {
-            const val Classic = "ch.qos.logback:logback-classic:$logbackVersion"    
+            const val Classic = "ch.qos.logback:logback-classic:$logbackVersion"
         }
         object Slf4j {
             const val Simple = "org.slf4j:slf4j-simple:$slf4jJVersion"
@@ -148,9 +149,14 @@ object Deps {
             const val Id = "deploy"
             const val Classpath = "deploy:deploy:SNAPSHOT"
         }
+        object Shadow {
+            const val Classpath = "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:$shadowVer"
+            const val Id = "com.github.johnrengelman.shadow"
+        }
     }
     object Projects {
-        const val Catgifs = ":catgifs"
+        const val CatgifsCataas = ":catgifs:cataas"
+        const val CatgifsFromCache = ":catgifs:from-cache"
         const val Bot = ":bot"
         const val DbMigrations = ":db-migrations"
     }

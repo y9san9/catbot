@@ -13,16 +13,17 @@ private fun setupMessage(reason: String) = """
     
     Optional:
     1) LOG_CHAT_ID - telegram chat/channel id where the bot will send updates to
+    2) CATGIFS_PROVIDER_TYPE - local/cataas whether to use local catgifs provider (files will be picked from catgifs-tmp-dir) or make requests to cataas.com and cache up to 500 gifs in the same folder. cataas by default.
     
     Database parameters should be optional in the future (sqlite will be used as fallback)
 """.trimIndent()
 
-private fun failWithReason(reason: String): Nothing {
+fun failWithReason(reason: String): Nothing {
     System.err.println(setupMessage(reason))
-    exitProcess(-1)
+    exitProcess(status = -1)
 }
 
-private fun failWithReasonWasNotProvided(name: String): Nothing =
+fun failWithReasonWasNotProvided(name: String): Nothing =
     failWithReason(reason = "$name was not provided")
 
 fun getEnvOrFail(name: String): String = System.getenv(name)

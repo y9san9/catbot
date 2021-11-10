@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(Deps.Plugins.Shadow.Classpath)
     implementation(Deps.Plugins.Dependencies.Classpath)
     implementation(Deps.Plugins.Ssh.Classpath)
 }
