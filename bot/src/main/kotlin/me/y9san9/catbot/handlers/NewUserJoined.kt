@@ -1,23 +1,11 @@
 package me.y9san9.catbot.handlers
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import me.y9san9.catbot.di.catgifs.CatGifsProvider
+import me.y9san9.catbot.CatBotDependencies
 import me.y9san9.catbot.di.log.LogEvent
-import me.y9san9.catbot.di.log.Logger
-import me.y9san9.catbot.di.requests.CatbotRequestsExecutor
-import me.y9san9.catbot.di.resources.StringsProvider
-import me.y9san9.catbot.di.storage.Storage
 
-fun handleNewUsersJoined(
-    executor: CatbotRequestsExecutor,
-    stringsProvider: StringsProvider,
-    catGifs: CatGifsProvider,
-    storage: Storage,
-    logger: Logger,
-    scope: CoroutineScope
-) {
+fun handleNewUsersJoined(dependencies: CatBotDependencies) = with(dependencies) {
     executor.newMembersJoined.onEach { member ->
         val text = when (storage.isUserJoinedFirstTime(member)) {
             true -> {
@@ -32,7 +20,7 @@ fun handleNewUsersJoined(
             }
         }
         val gifSent = executor.sendGif(
-            chatId = member.chat.id,
+            chat = member.chat,
             text = text,
             gif = catGifs.readRandomGifToFile()
         )

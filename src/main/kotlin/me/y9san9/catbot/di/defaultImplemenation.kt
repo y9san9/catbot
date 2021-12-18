@@ -1,13 +1,8 @@
 package me.y9san9.catbot.di
 
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newCoroutineContext
-import kotlinx.coroutines.plus
+import me.y9san9.catbot.CatBotDependencies
 import me.y9san9.catbot.CatBot
 import me.y9san9.catbot.di.catgifs.KtorCatgifsProvider
 import me.y9san9.catbot.di.log.BotLogger
@@ -34,7 +29,7 @@ fun CatBot.startNewDefaultInstanceSafely(
     startNewInstanceSafely(
         scope = scope,
         botStarter = { safeScope ->
-            startNewInstance(
+            val dependencies = CatBotDependencies(
                 executor = TelegramRequestsExecutor(safeScope, telegramBot),
                 catGifs = KtorCatgifsProvider(safeScope) { _, message -> logWriter.log(message) },
                 stringsProvider = DefaultStringsProvider,
@@ -46,6 +41,8 @@ fun CatBot.startNewDefaultInstanceSafely(
                 logger = BotLogger { _, message -> logWriter.log(message) },
                 scope = safeScope
             )
+
+            startNewInstance(dependencies)
         },
         logWriter = logWriter
     )
