@@ -5,7 +5,6 @@ import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
-import dev.inmo.tgbotapi.extensions.utils.extensions.parseCommandsWithParams
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
@@ -23,6 +22,7 @@ import dev.inmo.tgbotapi.utils.StorageFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
+import me.y9san9.catbot.di.requests.context.CatbotContext
 import me.y9san9.catbot.di.requests.models.Chat
 import me.y9san9.catbot.di.requests.models.asInMoTextEntities
 import me.y9san9.catbot.di.requests.models.ChatMember
@@ -30,20 +30,20 @@ import me.y9san9.catbot.di.requests.models.TextEntities
 import me.y9san9.catbot.di.requests.models.asChat
 import java.io.File
 
-fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramRequestsExecutor {
+fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramContext {
     val flows = FlowsUpdatesFilter()
 
-    val executor = TelegramRequestsExecutor(bot, flows, scope)
+    val executor = TelegramContext(bot, flows, scope)
     bot.longPolling(flows, scope = scope)
 
     return executor
 }
 
-class TelegramRequestsExecutor(
+class TelegramContext(
     private val bot: TelegramBot,
     flows: FlowsUpdatesFilter,
     scope: CoroutineScope
-) : CatbotRequestsExecutor {
+) : CatbotContext {
     private val me = scope.async { bot.getMe() }
 
     override val newMembersJoined: Flow<ChatMember> =

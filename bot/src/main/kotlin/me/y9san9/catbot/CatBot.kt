@@ -2,7 +2,7 @@ package me.y9san9.catbot
 
 import kotlinx.coroutines.launch
 import me.y9san9.catbot.di.log.LogEvent
-import me.y9san9.catbot.di.requests.CatbotRequestsExecutor.HasInlineRequests
+import me.y9san9.catbot.di.requests.context.CatbotContext.HasInlineRequests
 import me.y9san9.catbot.handlers.handleBotJoinedToGroup
 import me.y9san9.catbot.handlers.handleInlineRequests
 import me.y9san9.catbot.handlers.handleNewUsersJoined
