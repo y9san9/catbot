@@ -21,6 +21,9 @@ sealed class LogEvent {
 
     class StartCommandReceived(val chat: Chat) : LogEvent()
     class StartCommandGifSent(val chat: Chat) : LogEvent()
-
     class CouldNotSentTheGif(val chat: Chat) : LogEvent()
+
+    class InlineRequestReceived(val chat: Chat) : LogEvent()
+    class InlineRequestGifAnswered(val chat: Chat) : LogEvent()
+    class CouldNotAnswerInlineRequest(val chat: Chat) : LogEvent()
 }

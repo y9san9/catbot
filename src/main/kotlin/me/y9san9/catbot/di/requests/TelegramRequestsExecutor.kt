@@ -28,8 +28,6 @@ import me.y9san9.catbot.di.requests.models.asInMoTextEntities
 import me.y9san9.catbot.di.requests.models.ChatMember
 import me.y9san9.catbot.di.requests.models.TextEntities
 import me.y9san9.catbot.di.requests.models.asChat
-import me.y9san9.catbot.di.storage.db.JoinHistoryTable.chatId
-import me.y9san9.catbot.util.unit
 import java.io.File
 
 fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramRequestsExecutor {
