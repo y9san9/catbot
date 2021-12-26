@@ -1,4 +1,4 @@
-package me.y9san9.catgifs
+package me.y9san9.catgifs.cataas
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -9,16 +9,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import me.y9san9.catgifs.di.log.LogEvent
-import me.y9san9.catgifs.di.log.Logger
-import me.y9san9.catgifs.internal.RawApi
-import me.y9san9.catgifs.internal.extensions.byteReadChannel.readAsFlow
+import me.y9san9.catgifs.cataas.di.log.LogEvent
+import me.y9san9.catgifs.cataas.di.log.Logger
+import me.y9san9.catgifs.cataas.internal.RawApi
+import me.y9san9.catgifs.cataas.internal.extensions.byteReadChannel.readAsFlow
 import java.io.File
 
 class CatGifsClient(
     private val logger: Logger = Logger {},
     private val minDownloadInterval: Long = 10_000,
-    private val maxGifsCached: Int = 500
+    private val maxGifsCached: Int = 500,
+    private val directory: File = File(System.getProperty("user.dir"), "catgifs-tmp-dir"),
+    private val bufferSize: Int = 20 // how much gifs the bot should pre-download
 ) {
     init {
         require(maxGifsCached > 0) { "At least one cache file required for catgifs proper work" }
@@ -74,10 +76,7 @@ class CatGifsClient(
         }
     }
 
-    fun randomGifFiles(
-        directory: File = File(System.getProperty("user.dir"), "catgifs-tmp-dir"),
-        bufferSize: Int = 20 // how much gifs the bot should pre-download
-    ): Flow<File> {
+    val randomGifFiles: Flow<File> get() {
         if (!directory.exists())
             directory.mkdirs()
 

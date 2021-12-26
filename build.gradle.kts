@@ -16,7 +16,8 @@ allprojects {
 
 dependencies {
     implementation(project(Deps.Projects.Bot))
-    implementation(project(Deps.Projects.Catgifs))
+    implementation(project(Deps.Projects.CatgifsCataas))
+    implementation(project(Deps.Projects.CatgifsFromCache))
     implementation(project(Deps.Projects.DbMigrations))
     implementation(Deps.Libs.Slf4j.Simple)
     implementation(Deps.Libs.Exposed.Core)

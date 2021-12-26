@@ -1,9 +1,9 @@
 package me.y9san9.catbot.di.log
 
-import me.y9san9.catgifs.di.log.Logger
-import me.y9san9.catgifs.di.log.LogEvent
+import me.y9san9.catgifs.cataas.di.log.Logger
+import me.y9san9.catgifs.cataas.di.log.LogEvent
 
-class GifsLogger(private val logAction: (LogEvent, String) -> Unit) : Logger {
+class CataasGifsLogger(private val logAction: (LogEvent, String) -> Unit) : Logger {
     override fun processEvent(event: LogEvent) {
         val string = when (event) {
             is LogEvent.CachedFileUsed -> "Cached file used ${event.file.name}. Cached amount: ${event.cachedAmount}"

@@ -1,6 +1,6 @@
 
 import kotlinx.coroutines.flow.first
-import me.y9san9.catgifs.CatGifsClient
+import me.y9san9.catgifs.cataas.CatGifsClient
 import java.io.File
 
 private val catgifs = CatGifsClient()
@@ -8,5 +8,5 @@ private val catgifs = CatGifsClient()
 private suspend fun main() {
     val file = File("test.gif")
     file.delete()
-    catgifs.randomGifFiles().first()
+    catgifs.randomGifFiles.first()
 }

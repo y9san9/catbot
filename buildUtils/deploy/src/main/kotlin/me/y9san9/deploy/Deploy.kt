@@ -1,10 +1,15 @@
 package me.y9san9.deploy
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import groovy.xml.dom.DOMCategory.attributes
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
+import org.gradle.api.plugins.JavaApplication
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.*
+import org.gradle.platform.base.Application
+import org.gradle.platform.base.ApplicationSpec
 import org.hidetake.groovy.ssh.connection.AllowAnyHosts
 import org.hidetake.groovy.ssh.core.Remote
 import java.io.File
@@ -34,6 +39,7 @@ class Deploy : Plugin<Project> {
     override fun apply(target: Project) {
         target.apply(plugin = Deps.Plugins.Application.Id)
         target.apply(plugin = Deps.Plugins.Ssh.Id)
+        target.apply(plugin = Deps.Plugins.Shadow.Id)
 
         val configuration = target.extensions.create<DeployConfiguration>(name = "deploy")
 
@@ -53,6 +59,8 @@ class Deploy : Plugin<Project> {
             if(!configuration.deployPathInitialized)
                 error("You should specify ssh deploy path")
 
+            target.the<JavaApplication>().mainClass.set(configuration.mainClassName)
+
             val webServer = Remote (
                 mapOf (
                     "host" to configuration.host,
@@ -64,26 +72,9 @@ class Deploy : Plugin<Project> {
 
             target.extensions.create<SSH>("sshSession", target, webServer)
 
-            val fatJar = target.task("fatJar", type = Jar::class) {
-                dependsOn("build")
-
-                group = "build"
+            val shadowJar = tasks.named<ShadowJar>("shadowJar") {
                 archiveFileName.set("app.jar")
-
-                manifest {
-                    attributes["Implementation-Title"] = configuration.implementationTitle
-                }
-
-                from (
-                    project.configurations
-                        .getByName("runtimeClasspath")
-                        .map { if(it.isDirectory) it else target.zipTree(it) }
-                )
-
-                with(project.tasks.getByName("jar") as CopySpec)
-            }
-
-            target.tasks.withType<Jar> {
+                mergeServiceFiles()
                 manifest {
                     attributes(mapOf("Main-Class" to configuration.mainClassName))
                 }
@@ -92,11 +83,11 @@ class Deploy : Plugin<Project> {
             target.task("deploy") {
                 group = "deploy"
 
-                dependsOn(fatJar)
+                dependsOn(shadowJar)
 
                 doLast {
                     sshPlugin.session(webServer) {
-                        put("from" to fatJar.archiveFile.get().asFile, "into" to configuration.deployPath)
+                        put("from" to shadowJar.get().archiveFile.get().asFile, "into" to configuration.deployPath)
                         execute("systemctl restart ${configuration.serviceName}")
                     }
                 }

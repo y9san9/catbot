@@ -1,4 +1,4 @@
-package me.y9san9.catgifs.internal.extensions.byteReadChannel
+package me.y9san9.catgifs.cataas.internal.extensions.byteReadChannel
 
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.isNotEmpty

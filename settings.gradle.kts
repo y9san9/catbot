@@ -12,5 +12,6 @@ includeBuild("buildUtils/configuration")
 includeBuild("buildUtils/deploy")
 
 include("db-migrations")
-include("catgifs")
+include("catgifs:cataas")
+include("catgifs:from-cache")
 include("bot")
