@@ -7,6 +7,7 @@ private fun setupMessage(reason: String) = """
     
     To run the bot, please setup the environment properly:
     1) BOT_TOKEN - telegram bot token
+    2) CACHED_GIFS_CHAT_ID - chat where the bot will send gifs to get file id. primarily used for inline requests.
     2) DATABASE_URL - url for database to connect over jdbc, originally was tested with postgresql, so this variant is preferred
     3) DATABASE_USER - user for database
     4) DATABASE_PASSWORD - password for database

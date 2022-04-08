@@ -8,14 +8,14 @@ import me.y9san9.catbot.di.startNewDefaultInstanceSafely
 
 suspend fun main() = coroutineScope {
     val botToken = getEnvOrFail("BOT_TOKEN")
+    val logChatId = getEnvOrNull("LOG_CHAT_ID")?.toLongOrNull()
+    val cachedGifsChatId = getEnvOrFail("CACHED_GIFS_CHAT_ID").toLongOrNull() ?: failWithReason("Invalid long number for CACHED_GIFS_CHAT_ID")
     val databaseUrl = getEnvOrFail("DATABASE_URL")
     val databaseUser = getEnvOrFail("DATABASE_USER")
     val databasePassword = getEnvOrFail("DATABASE_PASSWORD")
 
-    val logChatId = getEnvOrNull("LOG_CHAT_ID")?.toLongOrNull()
-
     val catgifsProviderType = when (val input = getEnvOrNull("CATGIFS_PROVIDER_TYPE")?.lowercase()) {
-        null, "catgifs" -> CatGifsProviderType.Cataas
+        null, "cataas" -> CatGifsProviderType.Cataas
         "local" -> CatGifsProviderType.Local
         else -> failWithReason("Invalid input for CATGIFS_PROVIDER_TYPE: $input")
     }
@@ -24,10 +24,11 @@ suspend fun main() = coroutineScope {
         .startNewDefaultInstanceSafely(
             scope = this + CoroutineName("Catbot Coroutine"),
             token = botToken,
+            logChatId = logChatId,
+            cachedGifsChatId = cachedGifsChatId,
             databaseUrl = databaseUrl,
             databaseUser = databaseUser,
             databasePassword = databasePassword,
-            logChatId = logChatId,
             catGifsProviderType = catgifsProviderType
         )
 }

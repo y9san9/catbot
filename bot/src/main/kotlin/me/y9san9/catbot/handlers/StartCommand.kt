@@ -9,7 +9,7 @@ import me.y9san9.catbot.di.requests.context.replyWithGif
 fun handleStartCommand(dependencies: CatBotDependencies) = with(dependencies) {
     executor.startCommands.onEach { message ->
         logger.processEvent(LogEvent.StartCommandReceived(message.chat))
-        val gifSent = message.replyWithGif(
+        val gifSent = (message.replyMessage ?: message).replyWithGif(
             entities = stringsProvider.default.startMessage(),
             gif = catGifs.readRandomGifToFile()
         )

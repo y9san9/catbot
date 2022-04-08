@@ -14,6 +14,10 @@ dependencies {
     implementation(Deps.Plugins.Kotlin.Classpath)
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+}
+
 gradlePlugin {
     plugins.register("k-mpp") {
         id = "k-mpp"

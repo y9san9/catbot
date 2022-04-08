@@ -1,39 +1,33 @@
-package me.y9san9.catbot.di.requests
+package me.y9san9.catbot.di.requests.context
 
-import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.bot.getMe
 import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
-import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
 import dev.inmo.tgbotapi.extensions.utils.withContent
-import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
-import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.LeftChatMember
 import dev.inmo.tgbotapi.types.ChatMember.abstracts.MemberChatMember
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.BotCommandTextSource
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
-import dev.inmo.tgbotapi.utils.StorageFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
-import me.y9san9.catbot.di.requests.context.CatbotContext
-import me.y9san9.catbot.di.requests.models.Chat
-import me.y9san9.catbot.di.requests.models.asInMoTextEntities
-import me.y9san9.catbot.di.requests.models.ChatMember
-import me.y9san9.catbot.di.requests.models.TextEntities
-import me.y9san9.catbot.di.requests.models.asChat
 import java.io.File
 
-fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramContext {
+fun TelegramContext(
+    scope: CoroutineScope,
+    bot: TelegramBot,
+    storage: TelegramContext.FileIdStorage,
+    cachedGifsChatId: Long
+): TelegramContext {
     val flows = FlowsUpdatesFilter()
 
-    val executor = TelegramContext(bot, flows, scope)
+    val executor = TelegramContext(bot, flows, storage, cachedGifsChatId, scope)
     bot.longPolling(flows, scope = scope)
 
     return executor
@@ -42,11 +36,13 @@ fun TelegramRequestsExecutor(scope: CoroutineScope, bot: TelegramBot): TelegramC
 class TelegramContext(
     private val bot: TelegramBot,
     flows: FlowsUpdatesFilter,
+    private val fileIdStorage: FileIdStorage,
+    private val cachedGifsChatId: Long,
     scope: CoroutineScope
-) : CatbotContext {
+) : CatbotContext.Telegram {
     private val me = scope.async { bot.getMe() }
 
-    override val newMembersJoined: Flow<ChatMember> =
+    override val newMembersJoined: Flow<ChatMemberContext.Telegram> =
         flows.chatMemberUpdatesFlow
             .filter { event ->
                 event.data.user.id.chatId == event.data.newChatMemberState.user.id.chatId
@@ -54,29 +50,26 @@ class TelegramContext(
             }.filter { event ->
                 event.data.oldChatMemberState is LeftChatMember &&
                         event.data.newChatMemberState is MemberChatMember
+            }.map { event ->
+                TelegramChatMemberContext(bot, event.data.newChatMemberState.user, event.data.chat, fileIdStorage)
             }
-            .map { event -> ChatMember(event.data.user, event.data.chat as PublicChat) }
 
-    override val botJoinedToGroup: Flow<Chat> =
+    override val botJoinedToGroup: Flow<ChatContext.Telegram> =
         flows.myChatMemberUpdatesFlow.filter { event ->
             event.data.oldChatMemberState is LeftChatMember &&
                     (event.data.newChatMemberState is MemberChatMember ||
                             event.data.newChatMemberState is AdministratorChatMember)
-        }.map { event -> event.data.chat.asChat }
+        }.map { event -> TelegramChatContext(bot, event.data.chat, fileIdStorage) }
 
-    override val startCommands: Flow<Chat> =
+    override val startCommands: Flow<MessageContext.Telegram> =
         flows.messagesFlow
             .filter { event -> event.data.hasCommand(command = "start") }
-            .map { event -> event.data.chat.asChat }
+            .map { event -> TelegramMessageContext(bot, event.data, fileIdStorage) }
 
-    override suspend fun sendGif(chat: Chat, text: TextEntities, gif: File): Boolean =
-        safelyWithoutExceptions {
-            bot.sendAnimation(
-                chatId = ChatId(chat.id),
-                animation = MultipartFile(file = StorageFile(gif)),
-                entities = text.asInMoTextEntities
-            )
-        } != null
+    override val inlineRequests: Flow<InlineRequestContext.Telegram> =
+        flows.inlineQueriesFlow.map { update ->
+            TelegramInlineRequestContext(bot, update.data, fileIdStorage, cachedGifsChatId)
+        }
 
     private suspend fun Message.hasCommand(command: String) = (this as? ContentMessage<*>)
         ?.withContent<TextContent>()
@@ -86,4 +79,9 @@ class TelegramContext(
             it?.source == "/$command"
                     || it?.source == "/$command${me.await().username.username}"
         }
+
+    interface FileIdStorage {
+        fun getFileId(file: File): FileId?
+        fun putFileId(file: File, id: FileId)
+    }
 }

@@ -14,6 +14,7 @@ fun handleInlineRequests(executor: CatbotContext.HasInlineRequests, dependencies
             val gifSent = request.answerWithGif(
                 gif = catGifs.readRandomGifToFile()
             )
+            request.answer()
             logger.processEvent(
                 when (gifSent) {
                     true -> LogEvent.InlineRequestGifAnswered(request.from)

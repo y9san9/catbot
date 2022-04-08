@@ -7,7 +7,7 @@ import java.io.File
 
 sealed interface MessageContext {
     val chat: ChatContext
-    val replyContext: MessageContext?
+    val replyMessage: MessageContext?
 
     suspend fun replyWithGif(text: String, gif: File): Boolean
 
@@ -19,7 +19,7 @@ sealed interface MessageContext {
     interface Telegram : WithEntities {
         override val chat: ChatContext.Telegram
         @Suppress("RemoveRedundantQualifierName")
-        override val replyContext: MessageContext.Telegram?
+        override val replyMessage: MessageContext.Telegram?
     }
 }
 

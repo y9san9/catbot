@@ -9,10 +9,10 @@ import me.y9san9.catbot.di.resources.get
 
 fun handleNewUsersJoined(dependencies: CatBotDependencies) = with(dependencies) {
     executor.newMembersJoined.onEach { member ->
-        val text = when (member.isJoinedFirstTime()) {
+        val text = when (storage.isUserJoinedFirstTime(member)) {
             true -> {
                 logger.processEvent(LogEvent.ChatMemberJoined.New(member))
-                member.saveJoined()
+                storage.saveUserJoined(member)
                 logger.processEvent(LogEvent.UserSaved)
                 stringsProvider[member].newMemberCaptchaMessage(member.mention)
             }

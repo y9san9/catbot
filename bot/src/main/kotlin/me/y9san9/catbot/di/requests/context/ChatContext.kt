@@ -9,7 +9,6 @@ sealed interface ChatContext {
     val title: String
     val link: String?
     val languageCode: String?
-    val mention: TextEntity.Mention
 
     suspend fun sendGif(text: String, gif: File): Boolean
 
@@ -17,7 +16,12 @@ sealed interface ChatContext {
         override suspend fun sendGif(text: String, gif: File) = sendGif(TextEntity.Regular(text).asList, gif)
         suspend fun sendGif(entities: TextEntities, gif: File): Boolean
     }
-    interface Telegram : WithEntities
+
+    sealed interface WithLongId : ChatContext {
+        val id: Long
+    }
+
+    interface Telegram : WithEntities, WithLongId
 }
 
 suspend fun ChatContext.sendGif(entities: TextEntities, gif: File) = when (this) {

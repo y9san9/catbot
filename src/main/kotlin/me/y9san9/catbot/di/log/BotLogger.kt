@@ -22,6 +22,12 @@ class BotLogger(
             is LogEvent.CouldNotSentTheGif ->
                 "Could not send the gif to chat ${event.chat.title} (${event.chat.link}). "+
                     "Probably the bot was blocked by user, or removed from chat \uD83D\uDE3F"
+            is LogEvent.CouldNotAnswerInlineRequest ->
+                "Could not answer inline request in chat ${event.chat.title} (${event.chat.link})"
+            is LogEvent.InlineRequestGifAnswered ->
+                "Inline query gif sent in chat ${event.chat.title} (${event.chat.link})"
+            is LogEvent.InlineRequestReceived ->
+                "Inline query received in chat ${event.chat.title} (${event.chat.link})"
         }
         logAction(event, string)
     }

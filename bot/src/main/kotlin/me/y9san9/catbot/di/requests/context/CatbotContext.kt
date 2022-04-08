@@ -12,12 +12,18 @@ sealed interface CatbotContext {
     val botJoinedToGroup: Flow<ChatContext>
 
     val startCommands: Flow<MessageContext>
+    val groupSettingsCommands: Flow<MessageContext>
 
     sealed interface HasInlineRequests : CatbotContext {
         val inlineRequests: Flow<InlineRequestContext>
     }
 
-    interface Telegram : HasInlineRequests {
+    sealed interface WithLongChatId : CatbotContext {
+        override val newMembersJoined: Flow<ChatMemberContext.WithLongId>
+        override val botJoinedToGroup: Flow<ChatContext.WithLongId>
+    }
+
+    interface Telegram : HasInlineRequests, WithLongChatId {
         override val newMembersJoined: Flow<ChatMemberContext.Telegram>
         override val botJoinedToGroup: Flow<ChatContext.Telegram>
         override val startCommands: Flow<MessageContext.Telegram>

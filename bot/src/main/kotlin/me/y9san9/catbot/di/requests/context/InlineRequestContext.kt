@@ -6,6 +6,7 @@ sealed interface InlineRequestContext {
     val from: UserContext
 
     suspend fun answerWithGif(gif: File): Boolean
+    suspend fun answer(): Boolean
 
     interface Telegram : InlineRequestContext
 }

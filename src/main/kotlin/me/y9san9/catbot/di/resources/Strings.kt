@@ -2,7 +2,7 @@ package me.y9san9.catbot.di.resources
 
 import me.y9san9.catbot.di.requests.models.TextEntities
 import me.y9san9.catbot.di.requests.models.TextEntity
-import me.y9san9.catbot.di.resources.DefaultStrings.Ru
+import me.y9san9.catbot.di.resources.DefaultStrings.RU
 
 object DefaultStrings {
     object Default : Strings {
@@ -19,7 +19,7 @@ object DefaultStrings {
         override fun oldMemberCaptchaMessage(mention: TextEntity.Mention): TextEntities =
             mention + ", welcome back \uD83D\uDE3C. I remembered that you are human, but I have to send a cat right now."
     }
-    object Ru : Strings {
+    object RU : Strings {
         override fun groupWelcomeMessage(groupTitle: String): TextEntities =
             TextEntity.Start + "Буду рад служить $groupTitle! а вот и первый котик \uD83D\uDE3B\n\n" +
             TextEntity.Italic(text = "(сделайте меня администратором без прав, чтобы я получал события о присоединении пользователей)")
@@ -37,9 +37,9 @@ object DefaultStrings {
 
 object DefaultStringsProvider : StringsProvider {
     override val default: Strings = DefaultStrings.Default
-    override val localizations: Map<String, Strings> = mapOf(
-        "ru" to Ru,
-        "ua" to Ru,
-        "by" to Ru
+    override val localizations: Map<LanguageCode, Strings> = mapOf(
+        LanguageCode.RU to RU,
+        LanguageCode.UA to RU,
+        LanguageCode.BY to RU
     )
 }

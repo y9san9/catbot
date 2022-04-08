@@ -17,6 +17,10 @@ dependencies {
     implementation(Deps.Plugins.Ssh.Classpath)
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+}
+
 gradlePlugin {
     plugins.register("deploy") {
         id = "deploy"

@@ -12,7 +12,7 @@ object CatBot {
     fun startNewInstance(dependencies: CatBotDependencies) = dependencies.scope.launch {
         dependencies.logger.processEvent(LogEvent.BotStarted)
 
-        dependencies.storage.init()
+        dependencies.storage.init(dependencies.executor)
 
         handleNewUsersJoined(dependencies)
         handleBotJoinedToGroup(dependencies)
