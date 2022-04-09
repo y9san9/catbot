@@ -11,5 +11,5 @@ interface DatabaseMigration {
      */
     val afterVersion get() = applyVersion + 1
 
-    fun migrate(database: Database)
+    suspend fun migrate(database: Database)
 }

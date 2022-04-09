@@ -4,7 +4,7 @@ object Deps {
     const val compileSdkVersion = 30
     const val minSdkVersion = 21
 
-    private const val kotlinVersion = "1.6.0"
+    private const val kotlinVersion = "1.6.20"
     private const val coroutinesVersion = "1.6.0"
     private const val serializationVersion = "1.2.2"
     private const val nodejsExternalsVersion = "0.0.7"
@@ -158,6 +158,7 @@ object Deps {
         const val CatgifsCataas = ":catgifs:cataas"
         const val CatgifsFromCache = ":catgifs:from-cache"
         const val Bot = ":bot"
+        const val TelegramAdapters = ":telegram-adapters"
         const val DbMigrations = ":db-migrations"
     }
 }
