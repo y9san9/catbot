@@ -19,5 +19,5 @@ class FromCacheCatgifsProvider(scope: CoroutineScope, logAction: (LogEvent, Stri
             .launchIn(scope)
     }
 
-    override suspend fun readRandomGifToFile(): File = channel.receive()
+    override suspend fun readRandomGifToFile(): Result<File> = Result.success(channel.receive())
 }

@@ -21,7 +21,7 @@ allprojects {
 }
 
 dependencies {
-    implementation(project(Deps.Projects.Bot))
+    implementation(project(Deps.Projects.TelegramAdapters))
     implementation(project(Deps.Projects.CatgifsCataas))
     implementation(project(Deps.Projects.CatgifsFromCache))
     implementation(project(Deps.Projects.DbMigrations))

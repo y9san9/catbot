@@ -1,25 +1,24 @@
 package me.y9san9.catbot.di
 
 import dev.inmo.tgbotapi.bot.Ktor.telegramBot
+import dev.inmo.tgbotapi.types.ChatId
 import kotlinx.coroutines.CoroutineScope
-import me.y9san9.catbot.CatBotDependencies
-import me.y9san9.catbot.CatBot
+import me.y9san9.catbot.TelegramCatBot
+import me.y9san9.catbot.TelegramCatBotDeps
 import me.y9san9.catbot.di.catgifs.FromCacheCatgifsProvider
 import me.y9san9.catbot.di.catgifs.KtorCatgifsProvider
 import me.y9san9.catbot.di.log.BotLogger
 import me.y9san9.catbot.di.log.PrintLogger
 import me.y9san9.catbot.di.log.TelegramLogger
-import me.y9san9.catbot.di.requests.context.TelegramContext
 import me.y9san9.catbot.di.resources.DefaultStringsProvider
-import me.y9san9.catbot.di.storage.MemoryFileIdStorage
+import me.y9san9.catbot.di.resources.createNyanCatFile
 import me.y9san9.catbot.di.storage.db.DatabaseStorage
-import me.y9san9.catbot.di.storage.db.LongDatabaseStorage
 
 enum class CatGifsProviderType {
     Local, Cataas
 }
 
-fun CatBot.startNewDefaultInstanceSafely(
+fun TelegramCatBot.startNewDefaultInstanceSafely(
     scope: CoroutineScope,
     token: String,
     logChatId: Long?,
@@ -27,7 +26,7 @@ fun CatBot.startNewDefaultInstanceSafely(
     databaseUrl: String,
     databaseUser: String,
     databasePassword: String,
-    catGifsProviderType: CatGifsProviderType
+    catGifsProviderType: CatGifsProviderType,
 ) {
     val telegramBot = telegramBot(token)
     val logWriter = when (logChatId) {
@@ -47,19 +46,20 @@ fun CatBot.startNewDefaultInstanceSafely(
                 }
             }
 
-            val dependencies = CatBotDependencies(
-                executor = TelegramContext(scope, telegramBot, MemoryFileIdStorage, cachedGifsChatId),
-                catGifs = catgifsProvider,
+
+            val dependencies = TelegramCatBotDeps(
+                bot = telegramBot,
+                cachedGifsChatId = ChatId(cachedGifsChatId),
+                catgifsProvider = catgifsProvider,
                 stringsProvider = DefaultStringsProvider,
                 storage = DatabaseStorage(
-                    LongDatabaseStorage(
-                        url = databaseUrl,
-                        user = databaseUser,
-                        password = databasePassword
-                    )
+                    url = databaseUrl,
+                    user = databaseUser,
+                    password = databasePassword
                 ),
                 logger = BotLogger { _, message -> logWriter.log(message) },
-                scope = safeScope
+                scope = safeScope,
+                nyanCatFile = createNyanCatFile()
             )
 
             startNewInstance(dependencies)

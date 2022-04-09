@@ -30,18 +30,21 @@ class CatGifsClient(
         .randomGifStream()
         .readAsFlow(bufferSize)
 
-    private suspend fun readRandomGifToFile(directory: File): File {
-        @Suppress("BlockingMethodInNonBlockingContext")
-        val file = withContext(Dispatchers.IO) {
-            File.createTempFile(
-                /*prefix = */"y9catbot-",
-                /*suffix = */".gif",
-                /*dir = */directory
-            )
-        }
-        withContext(Dispatchers.IO) {
-            randomGif()
-                .collect(file::appendBytes)
+    private suspend fun readRandomGifToFile(directory: File): Result<File> {
+        val file = runCatching {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val file = withContext(Dispatchers.IO) {
+                File.createTempFile(
+                    /* prefix = */"y9catbot-",
+                    /* suffix = */".gif",
+                    /* directory = */directory
+                )
+            }
+            withContext(Dispatchers.IO) {
+                randomGif()
+                    .collect(file::appendBytes)
+            }
+            return@runCatching file
         }
         return file
     }
@@ -52,7 +55,7 @@ class CatGifsClient(
     // used to make download process synchronous for each client
     private var mutex: Mutex = Mutex()
 
-    private suspend fun FlowCollector<File>.readFiles(directory: File) {
+    private suspend fun FlowCollector<Result<File>>.readFiles(directory: File) {
         while (true) {
             val cachedFiles = directory.listFiles() ?: error("Cannot list files")
             if (cachedFiles.size >= maxGifsCached) {
@@ -65,18 +68,21 @@ class CatGifsClient(
                 if (System.currentTimeMillis() - lastTimeDownloaded > minDownloadInterval) {
                     val file = readRandomGifToFile(directory)
                     lastTimeDownloaded = System.currentTimeMillis()
-                    logger.processEvent(LogEvent.GifCached(file, cachedAmount = cachedFiles.size + 1))
+                    if (file.isSuccess)
+                        logger.processEvent(
+                            LogEvent.GifCached(file.getOrThrow(), cachedAmount = cachedFiles.size + 1)
+                        )
                     emit(file)
                 } else {
                     val file = cachedFiles.random()
                     logger.processEvent(LogEvent.CachedFileUsed(file, cachedAmount = cachedFiles.size))
-                    emit(file)
+                    emit(Result.success(file))
                 }
             }
         }
     }
 
-    val randomGifFiles: Flow<File> get() {
+    val randomGifFiles: Flow<Result<File>> get() {
         if (!directory.exists())
             directory.mkdirs()
 
