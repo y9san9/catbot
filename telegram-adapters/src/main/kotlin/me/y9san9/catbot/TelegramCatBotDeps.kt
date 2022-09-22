@@ -6,21 +6,21 @@ import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.longPolling
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.ChatId
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.ChatMember
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.LeftChatMember
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.MemberChatMember
-import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.InlineQueries.query.InlineQuery
-import dev.inmo.tgbotapi.types.MessageEntity.textsources.BotCommandTextSource
-import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.abstracts.WithOptionalLanguageCode
-import dev.inmo.tgbotapi.types.chat.abstracts.Chat
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.Chat
+import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.chat.PublicChat
+import dev.inmo.tgbotapi.types.chat.User
+import dev.inmo.tgbotapi.types.chat.member.AdministratorChatMember
+import dev.inmo.tgbotapi.types.chat.member.ChatMember
+import dev.inmo.tgbotapi.types.chat.member.LeftChatMember
+import dev.inmo.tgbotapi.types.chat.member.MemberChatMember
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.textsources.BotCommandTextSource
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -102,7 +102,7 @@ fun TelegramCatBotDeps(
 ): TelegramCatBotDeps {
     val me = scope.async { bot.getMe() }
     val updates = FlowsUpdatesFilter()
-    bot.longPolling(flowsUpdatesFilter = updates, scope = scope)
+    bot.longPolling(updates, scope = scope)
 
     val botJoinedEvents = updates.myChatMemberUpdatesFlow.filter { event ->
         event.data.oldChatMemberState is LeftChatMember &&

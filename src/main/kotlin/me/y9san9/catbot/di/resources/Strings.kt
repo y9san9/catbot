@@ -1,7 +1,11 @@
 package me.y9san9.catbot.di.resources
 
-import dev.inmo.tgbotapi.types.MessageEntity.textsources.*
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.PublicChat
+import dev.inmo.tgbotapi.types.message.textsources.TextMentionTextSource
+import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
+import dev.inmo.tgbotapi.types.message.textsources.italic
+import dev.inmo.tgbotapi.types.message.textsources.plus
+import dev.inmo.tgbotapi.types.message.textsources.regular
 import me.y9san9.catbot.strings.Strings
 import me.y9san9.catbot.strings.StringsProvider
 

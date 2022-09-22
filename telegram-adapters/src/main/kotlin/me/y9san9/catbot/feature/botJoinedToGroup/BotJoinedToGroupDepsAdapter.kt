@@ -2,8 +2,7 @@ package me.y9san9.catbot.feature.botJoinedToGroup
 
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
-import dev.inmo.tgbotapi.utils.StorageFile
+import dev.inmo.tgbotapi.types.chat.PublicChat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

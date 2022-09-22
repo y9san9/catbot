@@ -1,10 +1,9 @@
 package me.y9san9.catbot.di.log
 
 import dev.inmo.tgbotapi.extensions.utils.formatting.link
-import dev.inmo.tgbotapi.types.User
-import dev.inmo.tgbotapi.types.chat.abstracts.Chat
-import dev.inmo.tgbotapi.types.chat.abstracts.PrivateChat
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.Chat
+import dev.inmo.tgbotapi.types.chat.PrivateChat
+import dev.inmo.tgbotapi.types.chat.PublicChat
 import dev.inmo.tgbotapi.types.link
 import me.y9san9.catbot.log.LogEvent
 

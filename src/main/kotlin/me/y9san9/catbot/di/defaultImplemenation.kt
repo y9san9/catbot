@@ -1,6 +1,6 @@
 package me.y9san9.catbot.di
 
-import dev.inmo.tgbotapi.bot.Ktor.telegramBot
+import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.types.ChatId
 import kotlinx.coroutines.CoroutineScope
 import me.y9san9.catbot.TelegramCatBot

@@ -1,8 +1,8 @@
 package me.y9san9.catbot.log
 
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.ChatMember
-import dev.inmo.tgbotapi.types.chat.abstracts.Chat
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.Chat
+import dev.inmo.tgbotapi.types.chat.PublicChat
+import dev.inmo.tgbotapi.types.chat.member.ChatMember
 import java.io.File
 
 sealed class LogEvent {

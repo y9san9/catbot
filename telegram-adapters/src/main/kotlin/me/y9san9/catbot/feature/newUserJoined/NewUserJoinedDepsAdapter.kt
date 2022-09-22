@@ -3,11 +3,10 @@ package me.y9san9.catbot.feature.newUserJoined
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.media.sendVideo
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.ChatMember
-import dev.inmo.tgbotapi.types.MessageEntity.textsources.TextSourcesList
-import dev.inmo.tgbotapi.types.MessageEntity.textsources.mention
-import dev.inmo.tgbotapi.types.chat.abstracts.Chat
-import dev.inmo.tgbotapi.utils.StorageFile
+import dev.inmo.tgbotapi.types.chat.Chat
+import dev.inmo.tgbotapi.types.chat.member.ChatMember
+import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
+import dev.inmo.tgbotapi.types.message.textsources.mention
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
