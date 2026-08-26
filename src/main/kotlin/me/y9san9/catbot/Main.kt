@@ -20,7 +20,7 @@ suspend fun main() = coroutineScope {
         else -> failWithReason("Invalid input for CATGIFS_PROVIDER_TYPE: $input")
     }
 
-    CatBot
+    TelegramCatBot
         .startNewDefaultInstanceSafely(
             scope = this + CoroutineName("Catbot Coroutine"),
             token = botToken,

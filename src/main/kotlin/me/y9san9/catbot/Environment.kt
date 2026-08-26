@@ -31,3 +31,4 @@ fun getEnvOrFail(name: String): String = System.getenv(name)
     ?: failWithReasonWasNotProvided(name)
 
 fun getEnvOrNull(name: String): String? = System.getenv(name)
+

@@ -1,6 +1,6 @@
 package me.y9san9.db.migrations
 
-import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 
 
 class MigrationsConfig {

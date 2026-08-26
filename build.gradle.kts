@@ -16,12 +16,12 @@ allprojects {
     }
 
     java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 dependencies {
-    implementation(project(Deps.Projects.Bot))
+    implementation(project(Deps.Projects.TelegramAdapters))
     implementation(project(Deps.Projects.CatgifsCataas))
     implementation(project(Deps.Projects.CatgifsFromCache))
     implementation(project(Deps.Projects.DbMigrations))

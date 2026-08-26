@@ -1,27 +1,38 @@
 package me.y9san9.catbot
 
 import kotlinx.coroutines.launch
-import me.y9san9.catbot.di.log.LogEvent
-import me.y9san9.catbot.di.requests.context.CatbotContext.HasInlineRequests
-import me.y9san9.catbot.handlers.handleBotJoinedToGroup
-import me.y9san9.catbot.handlers.handleInlineRequests
-import me.y9san9.catbot.handlers.handleNewUsersJoined
-import me.y9san9.catbot.handlers.handleStartCommand
+import me.y9san9.catbot.feature.botJoinedToGroup.handleBotJoinedToGroup
+import me.y9san9.catbot.feature.inlineRequests.handleInlineRequests
+import me.y9san9.catbot.feature.newUserJoined.handleNewUserJoined
+import me.y9san9.catbot.feature.nyanCommand.handleNyanCommands
+import me.y9san9.catbot.feature.startCommand.handleStartCommand
 
 object CatBot {
-    fun startNewInstance(dependencies: CatBotDependencies) = dependencies.scope.launch {
-        dependencies.logger.processEvent(LogEvent.BotStarted)
+    context(deps: CatBotDeps)
+    fun startNewInstance() = deps.scope.launch {
+        deps.logger.logBotStarted()
+        deps.storage.init()
 
-        dependencies.storage.init(dependencies.executor)
-
-        handleNewUsersJoined(dependencies)
-        handleBotJoinedToGroup(dependencies)
-        handleStartCommand(dependencies)
-
-        when (val executor = dependencies.executor) {
-            is HasInlineRequests -> handleInlineRequests(executor, dependencies)
+        context(deps.botJoinedToGroupDeps) {
+            handleBotJoinedToGroup()
+        }
+        context(deps.newUserJoinedDeps) {
+            handleNewUserJoined()
+        }
+        context(deps.startCommandDeps) {
+            handleStartCommand()
+        }
+        context(deps.nyanCommandDeps) {
+            handleNyanCommands()
+        }
+        // not all platforms may have this mode
+        val inlineRequestsDeps = deps.inlineRequestsDeps
+        if(inlineRequestsDeps != null) {
+            context(inlineRequestsDeps) {
+                handleInlineRequests()
+            }
         }
 
-        dependencies.logger.processEvent(LogEvent.SetupFinished)
+        deps.logger.logBotSetupFinished()
     }
 }
