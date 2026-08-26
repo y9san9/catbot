@@ -1,38 +1,35 @@
 package me.y9san9.catbot.di
 
-import dev.inmo.tgbotapi.bot.Ktor.telegramBot
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineName
+import dev.inmo.tgbotapi.bot.ktor.telegramBot
+import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.RawChatId
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newCoroutineContext
-import kotlinx.coroutines.plus
-import me.y9san9.catbot.CatBot
+import me.y9san9.catbot.TelegramCatBot
+import me.y9san9.catbot.TelegramCatBotDeps
 import me.y9san9.catbot.di.catgifs.FromCacheCatgifsProvider
 import me.y9san9.catbot.di.catgifs.KtorCatgifsProvider
 import me.y9san9.catbot.di.log.BotLogger
 import me.y9san9.catbot.di.log.PrintLogger
 import me.y9san9.catbot.di.log.TelegramLogger
-import me.y9san9.catbot.di.requests.TelegramRequestsExecutor
 import me.y9san9.catbot.di.resources.DefaultStringsProvider
+import me.y9san9.catbot.di.resources.createNyanCatFile
 import me.y9san9.catbot.di.storage.db.DatabaseStorage
 
 enum class CatGifsProviderType {
     Local, Cataas
 }
 
-fun CatBot.startNewDefaultInstanceSafely(
+fun TelegramCatBot.startNewDefaultInstanceSafely(
     scope: CoroutineScope,
     token: String,
+    logChatId: Long?,
+    cachedGifsChatId: Long,
     databaseUrl: String,
     databaseUser: String,
     databasePassword: String,
-    logChatId: Long?,
-    catGifsProviderType: CatGifsProviderType
+    catGifsProviderType: CatGifsProviderType,
 ) {
     val telegramBot = telegramBot(token)
-
     val logWriter = when (logChatId) {
         null -> PrintLogger
         else -> TelegramLogger(logChatId, telegramBot, scope)
@@ -50,9 +47,11 @@ fun CatBot.startNewDefaultInstanceSafely(
                 }
             }
 
-            startNewInstance(
-                executor = TelegramRequestsExecutor(safeScope, telegramBot),
-                catGifs = catgifsProvider,
+
+            val dependencies = TelegramCatBotDeps(
+                bot = telegramBot,
+                cachedGifsChatId = ChatId(RawChatId(cachedGifsChatId)),
+                catgifsProvider = catgifsProvider,
                 stringsProvider = DefaultStringsProvider,
                 storage = DatabaseStorage(
                     url = databaseUrl,
@@ -60,8 +59,11 @@ fun CatBot.startNewDefaultInstanceSafely(
                     password = databasePassword
                 ),
                 logger = BotLogger { _, message -> logWriter.log(message) },
-                scope = safeScope
+                scope = safeScope,
+                nyanCatFile = createNyanCatFile()
             )
+
+            startNewInstance(dependencies)
         },
         logWriter = logWriter
     )

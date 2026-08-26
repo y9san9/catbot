@@ -3,6 +3,7 @@ package me.y9san9.catbot.di.log
 import dev.inmo.tgbotapi.bot.TelegramBot
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.RawChatId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
@@ -26,7 +27,7 @@ class TelegramLogger(
     init {
         messages
             .onEach { message ->
-                bot.sendMessage(ChatId(chatId), message)
+                bot.sendMessage(ChatId(RawChatId(chatId)), message)
                 delay(logMessageDelay)
             }
             .launchIn(scope)

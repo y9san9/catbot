@@ -13,12 +13,12 @@ class KtorCatgifsProvider(scope: CoroutineScope, logAction: (LogEvent, String) -
     private val gifsFlow = CatGifsClient(CataasGifsLogger(logAction)).randomGifFiles
 
     // files channel
-    private val channel: Channel<File> = Channel()
+    private val channel: Channel<Result<File>> = Channel()
 
     init {
         gifsFlow.onEach(channel::send)
             .launchIn(scope)
     }
 
-    override suspend fun readRandomGifToFile(): File = channel.receive()
+    override suspend fun readRandomGifToFile(): Result<File> = channel.receive()
 }

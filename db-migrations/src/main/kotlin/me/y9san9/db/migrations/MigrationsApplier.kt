@@ -1,10 +1,10 @@
 package me.y9san9.db.migrations
 
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.v1.jdbc.Database
 
 
 object MigrationsApplier {
-    fun apply (
+    suspend fun apply (
         database: Database,
         migrations: List<DatabaseMigration>,
         config: MigrationsConfig.() -> Unit = {}
@@ -13,7 +13,7 @@ object MigrationsApplier {
         val storage = MigrationsStorage(database, configObject.tableName)
         val version = storage.getVersion() ?: configObject.defaultVersion
 
-        tailrec fun migrate(version: Int): Int {
+        tailrec suspend fun migrate(version: Int): Int {
             val newVersion = migrations
                 .firstOrNull { it.applyVersion == version }
                 ?.apply { migrate(database) }
@@ -24,7 +24,8 @@ object MigrationsApplier {
 
         if(version == null) {
             // Up to date, so saving the latest version
-            migrations.maxOfOrNull(DatabaseMigration::afterVersion)?.let(storage::setVersion)
+            (migrations.maxOfOrNull(DatabaseMigration::afterVersion) ?: 0)
+                .let(storage::setVersion)
         } else {
             storage.setVersion(migrate(version))
         }

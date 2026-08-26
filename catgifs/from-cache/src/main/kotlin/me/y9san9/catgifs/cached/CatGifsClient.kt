@@ -1,6 +1,5 @@
 package me.y9san9.catgifs.cached
 
-import javafx.beans.binding.Bindings.isNotEmpty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import me.y9san9.catgifs.cached.di.log.LogEvent
