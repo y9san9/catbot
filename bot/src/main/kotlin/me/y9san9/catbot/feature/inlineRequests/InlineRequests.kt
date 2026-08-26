@@ -5,5 +5,5 @@ import me.y9san9.catbot.feature.common.handleGifCommands
 
 interface InlineRequestsDeps : GifCommandDeps
 
-context(InlineRequestsDeps)
+context(deps: InlineRequestsDeps)
 fun handleInlineRequests() = handleGifCommands()

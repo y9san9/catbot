@@ -19,15 +19,17 @@ interface SettingsDeps : CoroutineScopeDeps {
     }
 }
 
-context(SettingsDeps)
+context(deps: SettingsDeps)
 fun handleSettings() {
-    commands.launchEach {
-        sendSettings()
-    }
-    languageChosen.launchEach {
-        sendLanguageInput()
-    }
-    languageInput.launchEach {
-        save()
+    with(deps) {
+        commands.launchEach {
+            sendSettings()
+        }
+        languageChosen.launchEach {
+            sendLanguageInput()
+        }
+        languageInput.launchEach {
+            save()
+        }
     }
 }

@@ -14,29 +14,31 @@ import me.y9san9.catbot.feature.common.LogFoldable
 import me.y9san9.catbot.feature.common.logFoldable
 import java.io.File
 
-context(TelegramCatBotDeps)
-fun createBotJoinedToGroupDeps(): BotJoinedToGroupDeps = object : BotJoinedToGroupDeps,
-    CatGifsProvider by catgifsProvider {
-    override val scope: CoroutineScope =
-        this@TelegramCatBotDeps.scope
-    override val events: Flow<BotJoinedToGroupDeps.Event> =
-        botJoinedEvents.map(::EventWrapper)
+context(deps: TelegramCatBotDeps)
+fun createBotJoinedToGroupDeps(): BotJoinedToGroupDeps = with(deps) {
+    object : BotJoinedToGroupDeps,
+        CatGifsProvider by catgifsProvider {
+        override val scope: CoroutineScope =
+            deps.scope
+        override val events: Flow<BotJoinedToGroupDeps.Event> =
+            botJoinedEvents.map(::EventWrapper)
 
-    inner class EventWrapper(private val chat: PublicChat) : BotJoinedToGroupDeps.Event {
-        override fun logBotJoined() = logger.processEvent(LogEvent.BotJoinedToGroup(chat))
+        inner class EventWrapper(private val chat: PublicChat) : BotJoinedToGroupDeps.Event {
+            override fun logBotJoined() = logger.processEvent(LogEvent.BotJoinedToGroup(chat))
 
-        override suspend fun sendWelcomeGif(gifResult: Result<File>) = runCatching {
-            val gif = gifResult.getOrThrow()
-            val message = getStringsForChat(chat).groupWelcomeMessage(chat)
-            bot.sendAnimationCached(
-                chat = chat,
-                animation = gif,
-                entities = message
+            override suspend fun sendWelcomeGif(gifResult: Result<File>) = runCatching {
+                val gif = gifResult.getOrThrow()
+                val message = getStringsForChat(chat).groupWelcomeMessage(chat)
+                bot.sendAnimationCached(
+                    chat = chat,
+                    animation = gif,
+                    entities = message
+                )
+                return@runCatching gif
+            }.logFoldable(
+                success = { logger.processEvent(LogEvent.GroupWelcomeGifSent(it)) },
+                failure = { logger.processEvent(LogEvent.CouldNotSendTheGif(chat)) }
             )
-            return@runCatching gif
-        }.logFoldable(
-            success = { logger.processEvent(LogEvent.GroupWelcomeGifSent(it)) },
-            failure = { logger.processEvent(LogEvent.CouldNotSendTheGif(chat)) }
-        )
+        }
     }
 }

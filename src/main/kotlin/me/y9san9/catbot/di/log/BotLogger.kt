@@ -1,10 +1,11 @@
 package me.y9san9.catbot.di.log
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.extensions.utils.formatting.makeChatLink
+import dev.inmo.tgbotapi.extensions.utils.formatting.makeUserLink
 import dev.inmo.tgbotapi.types.chat.Chat
 import dev.inmo.tgbotapi.types.chat.PrivateChat
 import dev.inmo.tgbotapi.types.chat.PublicChat
-import dev.inmo.tgbotapi.types.link
+import dev.inmo.tgbotapi.types.chat.User
 import me.y9san9.catbot.log.LogEvent
 
 class BotLogger(
@@ -42,9 +43,11 @@ class BotLogger(
     }
 }
 
+private val User.link get() = makeUserLink(id)
 private val PrivateChat.title get() = "$firstName${lastName.takeIf(String::isNotBlank)?.let { " $it" } ?: ""}"
 private val Chat.title get() = when (this) {
     is PrivateChat -> title
     is PublicChat -> title
     else -> error("Not supported $this")
 }
+private val Chat.link get() = makeChatLink(id.chatId)

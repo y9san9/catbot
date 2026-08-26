@@ -8,28 +8,31 @@ import me.y9san9.catbot.feature.nyanCommand.handleNyanCommands
 import me.y9san9.catbot.feature.startCommand.handleStartCommand
 
 object CatBot {
-    context(CatBotDeps)
-    fun startNewInstance() = scope.launch {
-        logger.logBotStarted()
-        storage.init()
+    context(deps: CatBotDeps)
+    fun startNewInstance() = deps.scope.launch {
+        deps.logger.logBotStarted()
+        deps.storage.init()
 
-        with(botJoinedToGroupDeps) {
+        context(deps.botJoinedToGroupDeps) {
             handleBotJoinedToGroup()
         }
-        with(newUserJoinedDeps) {
+        context(deps.newUserJoinedDeps) {
             handleNewUserJoined()
         }
-        with(startCommandDeps) {
+        context(deps.startCommandDeps) {
             handleStartCommand()
         }
-        with(nyanCommandDeps) {
+        context(deps.nyanCommandDeps) {
             handleNyanCommands()
         }
         // not all platforms may have this mode
-        inlineRequestsDeps?.run {
-            handleInlineRequests()
+        val inlineRequestsDeps = deps.inlineRequestsDeps
+        if(inlineRequestsDeps != null) {
+            context(inlineRequestsDeps) {
+                handleInlineRequests()
+            }
         }
 
-        logger.logBotSetupFinished()
+        deps.logger.logBotSetupFinished()
     }
 }

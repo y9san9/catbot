@@ -75,7 +75,7 @@ data class TelegramCatBotDeps(
 
     internal val catGifFileIdRepository = CatGifFileIdRepository(bot, storage, catgifsProvider, cachedGifsChatId)
     internal suspend fun getStringsForChat(chat: Chat): Strings {
-        val languageCode = storage.getLanguageCodeForChat(chat.id.chatId) ?: when (chat) {
+        val languageCode = storage.getLanguageCodeForChat(chat.id.chatId.long) ?: when (chat) {
             is User -> (chat as? WithOptionalLanguageCode)?.languageCode
             else -> null
         }
@@ -154,5 +154,5 @@ private fun Message.hasCommand(bot: ExtendedBot, command: String) = (this as? Co
     ?.let { it as? BotCommandTextSource }
     .let {
         it?.source == "/$command"
-                || it?.source == "/$command${bot.username.username}"
+                || it?.source == "/$command${bot.username?.username ?: ""}"
     }

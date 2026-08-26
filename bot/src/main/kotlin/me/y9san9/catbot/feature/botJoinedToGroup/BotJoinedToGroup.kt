@@ -16,12 +16,14 @@ interface BotJoinedToGroupDeps : CoroutineScopeDeps, CatGifsProvider {
     }
 }
 
-context(BotJoinedToGroupDeps)
+context(deps: BotJoinedToGroupDeps)
 fun handleBotJoinedToGroup() {
-    events.launchEach {
-        logBotJoined()
-        val gif = readRandomGifToFile()
-        val result = sendWelcomeGif(gif)
-        result.fold()
+    with(deps) {
+        events.launchEach {
+            logBotJoined()
+            val gif = readRandomGifToFile()
+            val result = sendWelcomeGif(gif)
+            result.fold()
+        }
     }
 }

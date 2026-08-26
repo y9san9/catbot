@@ -1,6 +1,6 @@
 package me.y9san9.catbot.di.storage.db
 
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.v1.core.Table
 
 object FileIdTable : Table() {
     val fileId = varchar("fileId", length = 128)

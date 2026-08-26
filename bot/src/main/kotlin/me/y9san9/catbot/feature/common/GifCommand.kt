@@ -14,12 +14,14 @@ interface GifCommandDeps : CoroutineScopeDeps {
     }
 }
 
-context(GifCommandDeps)
+context(deps: GifCommandDeps)
 internal fun handleGifCommands() {
-    events.launchEach {
-        logCommandReceived()
-        val file = gifFile()
-        val result = answerCommand(file)
-        result.fold()
+    with(deps) {
+        events.launchEach {
+            logCommandReceived()
+            val file = gifFile()
+            val result = answerCommand(file)
+            result.fold()
+        }
     }
 }

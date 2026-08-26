@@ -2,6 +2,7 @@ package me.y9san9.catbot.di
 
 import dev.inmo.tgbotapi.bot.ktor.telegramBot
 import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.RawChatId
 import kotlinx.coroutines.CoroutineScope
 import me.y9san9.catbot.TelegramCatBot
 import me.y9san9.catbot.TelegramCatBotDeps
@@ -49,7 +50,7 @@ fun TelegramCatBot.startNewDefaultInstanceSafely(
 
             val dependencies = TelegramCatBotDeps(
                 bot = telegramBot,
-                cachedGifsChatId = ChatId(cachedGifsChatId),
+                cachedGifsChatId = ChatId(RawChatId(cachedGifsChatId)),
                 catgifsProvider = catgifsProvider,
                 stringsProvider = DefaultStringsProvider,
                 storage = DatabaseStorage(

@@ -3,20 +3,20 @@ package me.y9san9.catbot.di.resources
 import dev.inmo.tgbotapi.types.chat.PublicChat
 import dev.inmo.tgbotapi.types.message.textsources.TextMentionTextSource
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
-import dev.inmo.tgbotapi.types.message.textsources.italic
+import dev.inmo.tgbotapi.types.message.textsources.italicTextSource
 import dev.inmo.tgbotapi.types.message.textsources.plus
-import dev.inmo.tgbotapi.types.message.textsources.regular
+import dev.inmo.tgbotapi.types.message.textsources.regularTextSource
 import me.y9san9.catbot.strings.Strings
 import me.y9san9.catbot.strings.StringsProvider
 
 object DefaultStrings {
     object Default : Strings {
         override fun groupWelcomeMessage(chat: PublicChat): TextSourcesList =
-            regular("I would love to serve ${chat.title}, so let's check the first cat \uD83D\uDE3B.\n\n") +
-            italic("(add me as admin without permissions, so I would receive events about users join)")
+            regularTextSource("I would love to serve ${chat.title}, so let's check the first cat \uD83D\uDE3B.\n\n") +
+            italicTextSource("(add me as admin without permissions, so I would receive events about users join)")
 
         override fun startMessage(): TextSourcesList =
-            listOf(regular("Add me to the group and I will send there awesome cat-gifs like this \uD83D\uDC08"))
+            listOf(regularTextSource("Add me to the group and I will send there awesome cat-gifs like this \uD83D\uDC08"))
 
         override fun newMemberCaptchaMessage(mention: TextMentionTextSource): TextSourcesList =
             mention + ", welcome!\nVerify that you are a human, describe this gif. You have two minutes \uD83D\uDE3A"
@@ -26,11 +26,11 @@ object DefaultStrings {
     }
     object RU : Strings {
         override fun groupWelcomeMessage(chat: PublicChat): TextSourcesList =
-            regular("Буду рад служить ${chat.title}! а вот и первый котик \uD83D\uDE3B\n\n") +
-            italic(text = "(сделайте меня администратором без прав, чтобы я получал события о присоединении пользователей)")
+            regularTextSource("Буду рад служить ${chat.title}! а вот и первый котик \uD83D\uDE3B\n\n") +
+            italicTextSource(text = "(сделайте меня администратором без прав, чтобы я получал события о присоединении пользователей)")
 
         override fun startMessage(): TextSourcesList =
-            listOf(regular("Добавь меня в свою группу и я буду отправлять туда куртые котогифки как эта \uD83D\uDC08"))
+            listOf(regularTextSource("Добавь меня в свою группу и я буду отправлять туда куртые котогифки как эта \uD83D\uDC08"))
 
         override fun newMemberCaptchaMessage(mention: TextMentionTextSource): TextSourcesList =
             mention + ", докажи, что ты человек.\nНапиши, что происходит на картинке. У тебя пара минут \uD83D\uDE3A"

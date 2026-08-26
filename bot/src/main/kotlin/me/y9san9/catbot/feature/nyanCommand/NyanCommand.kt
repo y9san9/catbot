@@ -5,5 +5,5 @@ import me.y9san9.catbot.feature.common.handleGifCommands
 
 interface NyanCommandDeps : GifCommandDeps
 
-context(NyanCommandDeps)
+context(deps: NyanCommandDeps)
 fun handleNyanCommands() = handleGifCommands()

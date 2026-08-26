@@ -1,35 +1,35 @@
 @file:Suppress("FunctionName", "unused")
 
 object Deps {
-    const val compileSdkVersion = 30
+    const val compileSdkVersion = 36
     const val minSdkVersion = 21
 
-    private const val kotlinVersion = "1.6.20"
-    private const val coroutinesVersion = "1.6.0"
-    private const val serializationVersion = "1.2.2"
+    private const val kotlinVersion = "2.4.10"
+    private const val coroutinesVersion = "1.11.0"
+    private const val serializationVersion = "1.11.0"
     private const val nodejsExternalsVersion = "0.0.7"
-    private const val ktorVersion = "1.6.6"
-    private const val ktorOpenapiVersion = "0.2-beta.18"
-    private const val exposedVersion = "0.32.1"
-    private const val datetimeVersion = "0.2.1"
+    private const val ktorVersion = "3.3.3"
+    private const val ktorOpenapiVersion = "0.3-beta.2"
+    private const val exposedVersion = "1.3.1"
+    private const val datetimeVersion = "0.8.0"
 
-    private const val postgresqlVersion = "42.2.23"
-    private const val slf4jJVersion = "1.7.31"
-    private const val logbackVersion = "0.9.26"
+    private const val postgresqlVersion = "42.7.13"
+    private const val slf4jJVersion = "2.0.18"
+    private const val logbackVersion = "1.6.3"
     private const val sshVersion = "2.10.1"
-    private const val inMoTgBotApiVersion = "3.2.6"
+    private const val inMoTgBotApiVersion = "34.0.0"
     private const val kstringsVersion = "1.0-prototype8"
 
-    private const val materialVersion = "1.2.1"
-    private const val recyclerViewVersion = "1.1.0"
+    private const val materialVersion = "1.14.0"
+    private const val recyclerViewVersion = "1.4.0"
     private const val swipeRefreshLayoutVersion = "1.1.0"
-    private const val constraintLayoutVersion = "2.0.0"
-    private const val lifecycleVersion = "2.2.0"
-    private const val glideVersion = "4.12.0"
-    private const val androidAppCompatVersion = "1.1.0"
+    private const val constraintLayoutVersion = "2.2.1"
+    private const val lifecycleVersion = "2.9.4"
+    private const val glideVersion = "4.16.0"
+    private const val androidAppCompatVersion = "1.7.1"
 
-    private const val androidGradlePluginVersion = "4.2.0"
-    private const val shadowVer = "7.0.0"
+    private const val androidGradlePluginVersion = "9.0.1"
+    private const val shadowVer = "9.6.1"
 
     object Libs {
         object Kotlinx {
@@ -150,8 +150,8 @@ object Deps {
             const val Classpath = "deploy:deploy:SNAPSHOT"
         }
         object Shadow {
-            const val Classpath = "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:$shadowVer"
-            const val Id = "com.github.johnrengelman.shadow"
+            const val Classpath = "com.gradleup.shadow:shadow-gradle-plugin:$shadowVer"
+            const val Id = "com.gradleup.shadow"
         }
     }
     object Projects {

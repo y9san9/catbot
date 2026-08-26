@@ -15,28 +15,30 @@ import me.y9san9.catbot.log.LogEvent
 import java.io.File
 
 
-context(TelegramCatBotDeps)
-fun createStartCommandDeps(): StartCommandDeps = object : StartCommandDeps {
-    override val scope: CoroutineScope = this@TelegramCatBotDeps.scope
-    override val events: Flow<GifCommandDeps.Event> =
-        startCommandEvents.map(::EventWrapper)
+context(deps: TelegramCatBotDeps)
+fun createStartCommandDeps(): StartCommandDeps = with(deps) {
+    object : StartCommandDeps {
+        override val scope: CoroutineScope = deps.scope
+        override val events: Flow<GifCommandDeps.Event> =
+            startCommandEvents.map(::EventWrapper)
 
-    override suspend fun gifFile(): Result<File> = catgifsProvider.readRandomGifToFile()
+        override suspend fun gifFile(): Result<File> = catgifsProvider.readRandomGifToFile()
 
-    inner class EventWrapper(val message: Message) : GifCommandDeps.Event {
-        override fun logCommandReceived() =
-            logger.processEvent(LogEvent.StartCommandReceived(message.chat))
+        inner class EventWrapper(val message: Message) : GifCommandDeps.Event {
+            override fun logCommandReceived() =
+                logger.processEvent(LogEvent.StartCommandReceived(message.chat))
 
-        override suspend fun answerCommand(gif: Result<File>) = runCatching {
-            bot.sendAnimationCached(
-                chat = message.chat,
-                animation = gif.getOrThrow(),
-                entities = getStringsForMessage(message).startMessage(),
-                replyToMessageId = ((message as? PossiblyReplyMessage)?.replyTo ?: message).messageId
+            override suspend fun answerCommand(gif: Result<File>) = runCatching {
+                bot.sendAnimationCached(
+                    chat = message.chat,
+                    animation = gif.getOrThrow(),
+                    entities = getStringsForMessage(message).startMessage(),
+                    replyToMessageId = ((message as? PossiblyReplyMessage)?.replyTo ?: message).messageId
+                )
+            }.logFoldable(
+                success = { logger.processEvent(LogEvent.StartCommandGifSent(message.chat)) },
+                failure = { logger.processEvent(LogEvent.CouldNotSendTheGif(message.chat)) }
             )
-        }.logFoldable(
-            success = { logger.processEvent(LogEvent.StartCommandGifSent(message.chat)) },
-            failure = { logger.processEvent(LogEvent.CouldNotSendTheGif(message.chat)) }
-        )
+        }
     }
 }

@@ -23,22 +23,24 @@ interface NewUserJoinedDeps : CoroutineScopeDeps, CatGifsProvider {
     }
 }
 
-context(NewUserJoinedDeps)
+context(deps: NewUserJoinedDeps)
 fun handleNewUserJoined() {
-    events.launchEach {
-        val gif = readRandomGifToFile()
-        val result = when (isUserJoinedFirstTime()) {
-            true -> {
-                logNewMemberJoined()
-                saveUserJoined()
-                logUserSaved()
-                sendNewMemberCaptchaMessage(gif)
+    with(deps) {
+        events.launchEach {
+            val gif = readRandomGifToFile()
+            val result = when (isUserJoinedFirstTime()) {
+                true -> {
+                    logNewMemberJoined()
+                    saveUserJoined()
+                    logUserSaved()
+                    sendNewMemberCaptchaMessage(gif)
+                }
+                false -> {
+                    logOldMemberJoined()
+                    sendOldMemberCaptchaMessage(gif)
+                }
             }
-            false -> {
-                logOldMemberJoined()
-                sendOldMemberCaptchaMessage(gif)
-            }
+            result.fold()
         }
-        result.fold()
     }
 }

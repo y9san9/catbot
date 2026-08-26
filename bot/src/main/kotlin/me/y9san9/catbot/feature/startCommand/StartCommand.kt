@@ -5,5 +5,5 @@ import me.y9san9.catbot.feature.common.handleGifCommands
 
 interface StartCommandDeps : GifCommandDeps
 
-context(StartCommandDeps)
+context(deps: StartCommandDeps)
 fun handleStartCommand() = handleGifCommands()

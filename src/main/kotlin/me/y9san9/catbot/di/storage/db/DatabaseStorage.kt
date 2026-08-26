@@ -4,8 +4,14 @@ import dev.inmo.tgbotapi.requests.abstracts.FileId
 import me.y9san9.catbot.Storage
 import me.y9san9.catbot.utils.getMD5
 import me.y9san9.db.migrations.MigrationsApplier
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.io.File
 
 class DatabaseStorage(
@@ -20,24 +26,25 @@ class DatabaseStorage(
     )
 
     override suspend fun init() {
-        newSuspendedTransaction(db = db) {
+        suspendTransaction(db = db) {
             SchemaUtils.create(LongJoinHistoryTable, ChatSettingsTable, FileIdTable)
         }
         MigrationsApplier.apply(db, migrations)
     }
 
     override suspend fun isUserJoinedFirstTime(chatId: Long, userId: Long): Boolean =
-        newSuspendedTransaction(db = db) {
-            LongJoinHistoryTable.select {
-                (LongJoinHistoryTable.chatId eq chatId) and (LongJoinHistoryTable.userId eq userId)
-            }.firstOrNull() == null
+        suspendTransaction(db = db) {
+            LongJoinHistoryTable
+                .selectAll()
+                .where { (LongJoinHistoryTable.chatId eq chatId) and (LongJoinHistoryTable.userId eq userId) }
+                .firstOrNull() == null
         }
 
     override suspend fun saveUserJoined(chatId: Long, userId: Long) {
-        newSuspendedTransaction(db = db) {
+        suspendTransaction(db = db) {
             LongJoinHistoryTable.insert { statement ->
-                statement[LongJoinHistoryTable.chatId] = userId
-                statement[LongJoinHistoryTable.userId] = chatId
+                statement[LongJoinHistoryTable.chatId] = chatId
+                statement[LongJoinHistoryTable.userId] = userId
             }
         }
     }
@@ -45,7 +52,7 @@ class DatabaseStorage(
     override suspend fun saveLanguageCodeForChat(chatId: Long, languageCode: String) {
         require(languageCode.length == 2)
         insertChatSettingsIfNeed(chatId)
-        newSuspendedTransaction(db = db) {
+        suspendTransaction(db = db) {
             ChatSettingsTable.update(where = { ChatSettingsTable.chatId eq chatId }) { statement ->
                 statement[ChatSettingsTable.languageCode] = languageCode
             }
@@ -53,14 +60,15 @@ class DatabaseStorage(
     }
 
     override suspend fun getLanguageCodeForChat(chatId: Long): String? =
-        newSuspendedTransaction(db = db) {
-            ChatSettingsTable.select { ChatSettingsTable.chatId eq chatId }
+        suspendTransaction(db = db) {
+            ChatSettingsTable.selectAll()
+                .where { ChatSettingsTable.chatId eq chatId }
                 .singleOrNull()?.get(ChatSettingsTable.languageCode)
         }
 
     private suspend fun insertChatSettingsIfNeed(chatId: Long) {
-        newSuspendedTransaction(db = db) {
-            if (ChatSettingsTable.select { ChatSettingsTable.chatId eq chatId }.firstOrNull() == null)
+        suspendTransaction(db = db) {
+            if (ChatSettingsTable.selectAll().where { ChatSettingsTable.chatId eq chatId }.firstOrNull() == null)
                 ChatSettingsTable.insert {
                     it[ChatSettingsTable.chatId] = chatId
                 }
@@ -75,7 +83,7 @@ class DatabaseStorage(
     override suspend fun putFileId(file: File, fileId: FileId) {
         val checksum = file.getMD5()
         if (getFileId(checksum) != null) return
-        newSuspendedTransaction(db = db) {
+        suspendTransaction(db = db) {
             FileIdTable.insert { statement ->
                 statement[FileIdTable.fileId] = fileId.fileId
                 statement[FileIdTable.md5checksum] = checksum
@@ -84,9 +92,10 @@ class DatabaseStorage(
     }
 
     private suspend fun getFileId(checksum: String): FileId? =
-        newSuspendedTransaction(db = db) {
-            FileIdTable.select { FileIdTable.md5checksum eq checksum }.firstOrNull()
-                ?.get(FileIdTable.fileId)?.let(::FileId)
+        suspendTransaction(db = db) {
+            FileIdTable.selectAll()
+                .where { FileIdTable.md5checksum eq checksum }
+                .firstOrNull()?.get(FileIdTable.fileId)?.let(::FileId)
         }
 
 }

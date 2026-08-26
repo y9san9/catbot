@@ -5,31 +5,36 @@ import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.requests.abstracts.asMultipartFile
 import dev.inmo.tgbotapi.types.MessageIdentifier
+import dev.inmo.tgbotapi.types.ReplyParameters
 import dev.inmo.tgbotapi.types.chat.Chat
 import dev.inmo.tgbotapi.types.message.textsources.TextSourcesList
 import me.y9san9.catbot.TelegramCatBotDeps
 import java.io.File
 
-context(TelegramCatBotDeps)
+context(deps: TelegramCatBotDeps)
 suspend fun TelegramBot.sendAnimationCached(
     chat: Chat,
     animation: File,
     entities: TextSourcesList = listOf(),
     replyToMessageId: MessageIdentifier? = null
 ) {
-    val fileId = storage.getFileId(animation) ?: return sendAnimation(
+    val fileId = deps.storage.getFileId(animation) ?: return sendAnimation(
         chat = chat,
         animation = animation.asMultipartFile(),
         entities = entities,
-        replyToMessageId = replyToMessageId
+        replyParameters = replyToMessageId?.let {
+            ReplyParameters(chatIdentifier = chat.id, messageId = it)
+        }
     ).let { message ->
-        storage.putFileId(animation, message.content.media.fileId)
+        deps.storage.putFileId(animation, message.content.media.fileId)
     }
 
     sendAnimation(
         chat = chat,
         animation = fileId,
         entities = entities,
-        replyToMessageId = replyToMessageId
+        replyParameters = replyToMessageId?.let {
+            ReplyParameters(chatIdentifier = chat.id, messageId = it)
+        }
     )
 }
