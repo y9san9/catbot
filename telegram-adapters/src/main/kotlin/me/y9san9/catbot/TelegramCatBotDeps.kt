@@ -19,6 +19,7 @@ import dev.inmo.tgbotapi.types.chat.member.MemberChatMember
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.RequestGuestContentMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.textsources.BotCommandTextSource
 import dev.inmo.tgbotapi.updateshandlers.FlowsUpdatesFilter
@@ -49,6 +50,7 @@ data class TelegramCatBotDeps(
     val startCommandEvents: Flow<Message>,
     val nyanCommands: Flow<Message>,
     val inlineRequests: Flow<InlineQuery>,
+    val guestRequests: Flow<RequestGuestContentMessage<*>>,
     val logger: Logger,
     val catgifsProvider: CatGifsProvider,
     val stringsProvider: StringsProvider,
@@ -131,6 +133,9 @@ fun TelegramCatBotDeps(
     val inlineRequests = updates.inlineQueriesFlow
         .map { event -> event.data }
 
+    val guestRequests = updates.guestMessageUpdatesFlow
+        .map { event -> event.data }
+
     return TelegramCatBotDeps(
         scope = scope,
         bot = bot,
@@ -139,6 +144,7 @@ fun TelegramCatBotDeps(
         startCommandEvents = startCommandEvents,
         nyanCommands = nyanCommandEvents,
         inlineRequests = inlineRequests,
+        guestRequests = guestRequests,
         logger = logger,
         catgifsProvider = catgifsProvider,
         stringsProvider = stringsProvider,
