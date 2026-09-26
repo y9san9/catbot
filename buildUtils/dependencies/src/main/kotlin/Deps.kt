@@ -17,7 +17,7 @@ object Deps {
     private const val slf4jJVersion = "2.0.18"
     private const val logbackVersion = "1.6.3"
     private const val sshVersion = "2.10.1"
-    private const val inMoTgBotApiVersion = "34.0.0"
+    private const val inMoTgBotApiVersion = "36.1.0"
     private const val kstringsVersion = "1.0-prototype8"
 
     private const val materialVersion = "1.14.0"
